@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal, Download } from 'lucide-react';
 import { BaseCrudService } from '@/integrations';
 import { Experience, Projects } from '@/entities';
 import { Image } from '@/components/ui/image';
@@ -163,9 +163,10 @@ function Header({ activeSection }: { activeSection: string }) {
           })}
           <Link 
             to="/resume" 
-            className="px-5 py-2 border border-foreground/20 rounded-full text-sm hover:border-accent hover:text-accent transition-all duration-300"
+            className="px-5 py-2 border border-foreground/20 rounded-full text-sm hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2 group"
           >
-            Resume
+            CV
+            <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
           </Link>
         </div>
       </nav>
@@ -229,9 +230,9 @@ function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <ProjectsCTA />
-          <button className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium">
+          <a href="#contact" className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium">
             Get in Touch
-          </button>
+          </a>
         </div>
 
         {/* Social Links */}
