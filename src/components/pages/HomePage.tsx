@@ -374,66 +374,227 @@ function ProjectsCTA() {
 }
 
 function AboutSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Subtle parallax for image (slow, predictable)
+  const imageY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
   return (
-    <section id="about" className="py-32 px-6 md:px-12 max-w-[120rem] mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+    <section id="about" className="py-32 px-6 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        {/* Image Column - Subtle Parallax & Hover Zoom */}
         <div className="lg:col-span-4">
           <AnimatedElement>
-            <h2 className="font-heading text-4xl font-bold mb-6 flex items-center gap-4">
+            <h2 className="font-heading text-4xl font-bold mb-8 flex items-center gap-4">
               <span className="w-12 h-[1px] bg-accent"></span>
               About
             </h2>
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-foreground/5">
-              <Image 
-                src="https://static.wixstatic.com/media/445dc7_21ec1884c0d540bfaa549a9aaf780056~mv2.png?originWidth=768&originHeight=960" 
-                alt="Developer working"
-                className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-            </div>
+            <ImageWithInteraction imageY={imageY} />
           </AnimatedElement>
         </div>
 
-        <div className="lg:col-span-8 flex flex-col justify-center">
+        {/* Content Column - Hierarchy-Driven */}
+        <div className="lg:col-span-8 flex flex-col justify-start">
+          {/* Engineering Philosophy Statement */}
           <AnimatedElement delay={200}>
-            <p className="font-heading text-2xl md:text-3xl leading-relaxed text-foreground/90 mb-12">
-              I am an early-stage developer crafting <span className="text-accent">clean, functional applications</span> with a focus on engineering fundamentals.
+            <p className="font-heading text-2xl md:text-3xl leading-relaxed text-foreground/90 mb-16">
+              I design systems that scale. Every decision prioritizes <span className="text-accent">readability, maintainability, and performance</span> over expedience.
             </p>
           </AnimatedElement>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <AnimatedElement delay={300}>
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-4">
-                  <Code2 size={24} />
-                </div>
-                <h3 className="font-heading text-xl font-bold">The Craft</h3>
-                <p className="text-foreground/60 leading-relaxed">
-                  I approach development not just as coding, but as problem-solving. Every line of code is an opportunity to improve readability, performance, and maintainability.
-                </p>
-              </div>
-            </AnimatedElement>
+          {/* The Craft - Primary Focus */}
+          <AnimatedElement delay={300}>
+            <CraftSection />
+          </AnimatedElement>
 
-            <AnimatedElement delay={400}>
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-4">
-                  <Cpu size={24} />
-                </div>
-                <h3 className="font-heading text-xl font-bold">The Stack</h3>
-                <div className="flex flex-wrap gap-2">
-                  {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Tailwind', 'Git'].map((tech) => (
-                    <span key={tech} className="px-3 py-1 text-xs font-mono border border-foreground/10 rounded-full text-foreground/60">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </AnimatedElement>
-          </div>
+          {/* The Stack - Secondary Support */}
+          <AnimatedElement delay={400}>
+            <StackSection />
+          </AnimatedElement>
         </div>
       </div>
     </section>
   );
+}
+
+// Image with Subtle Parallax & Hover Zoom
+function ImageWithInteraction({ imageY }: { imageY: any }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      style={{ y: imageY }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="relative aspect-[4/5] w-full overflow-hidden rounded-lg bg-foreground/5 border border-foreground/10"
+    >
+      <motion.div
+        animate={{ scale: isHovered ? 1.02 : 1 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        className="w-full h-full"
+      >
+        <Image 
+          src="https://static.wixstatic.com/media/445dc7_21ec1884c0d540bfaa549a9aaf780056~mv2.png?originWidth=768&originHeight=960" 
+          alt="Developer working"
+          className="w-full h-full object-cover opacity-75"
+        />
+      </motion.div>
+      
+      {/* Subtle overlay - no gradient, just a border shift on hover */}
+      <motion.div
+        animate={{ opacity: isHovered ? 0.08 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0 bg-accent pointer-events-none"
+      />
+    </motion.div>
+  );
+}
+
+// The Craft - Dominant Section
+function CraftSection() {
+  const [isFocused, setIsFocused] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <div
+      onMouseEnter={() => !prefersReducedMotion && setIsFocused(true)}
+      onMouseLeave={() => setIsFocused(false)}
+      className="mb-16 pb-16 border-b border-foreground/10"
+    >
+      <div className="space-y-6">
+        {/* Icon - Larger, more prominent */}
+        <motion.div
+          animate={{ opacity: isFocused ? 1 : 0.7 }}
+          transition={{ duration: 0.2 }}
+          className="w-12 h-12 rounded-lg bg-accent/15 flex items-center justify-center text-accent"
+        >
+          <Code2 size={28} />
+        </motion.div>
+
+        {/* Heading */}
+        <h3 className="font-heading text-3xl font-bold text-foreground">
+          The Craft
+        </h3>
+
+        {/* Description - Engineering-focused */}
+        <motion.p
+          animate={{ color: isFocused ? '#E0E0E0' : '#999999' }}
+          transition={{ duration: 0.2 }}
+          className="text-lg leading-relaxed max-w-2xl"
+        >
+          I approach every problem as a systems design challenge. Code is communication—clarity and structure matter as much as functionality. I prioritize:
+        </motion.p>
+
+        {/* Core Principles - Subtle List */}
+        <ul className="space-y-3 mt-6">
+          {[
+            { label: 'Readability', desc: 'Code that explains itself through clear naming and structure' },
+            { label: 'Scalability', desc: 'Architectures that grow without technical debt' },
+            { label: 'Maintainability', desc: 'Systems designed for future developers, including myself' }
+          ].map((item) => (
+            <CraftPrinciple key={item.label} label={item.label} desc={item.desc} isFocused={isFocused} />
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// Individual Craft Principle with Subtle Underline
+function CraftPrinciple({ label, desc, isFocused }: { label: string; desc: string; isFocused: boolean }) {
+  return (
+    <motion.li
+      animate={{ opacity: isFocused ? 1 : 0.7 }}
+      transition={{ duration: 0.2 }}
+      className="flex items-start gap-3 group"
+    >
+      <motion.span
+        animate={{ width: isFocused ? 24 : 16 }}
+        transition={{ duration: 0.2 }}
+        className="mt-1.5 h-px bg-accent flex-shrink-0"
+      />
+      <div>
+        <span className="font-mono text-sm font-semibold text-accent">{label}</span>
+        <p className="text-foreground/60 text-sm mt-1">{desc}</p>
+      </div>
+    </motion.li>
+  );
+}
+
+// The Stack - Secondary, Supporting Role
+function StackSection() {
+  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const technologies = [
+    { name: 'React', category: 'Frontend' },
+    { name: 'TypeScript', category: 'Language' },
+    { name: 'Node.js', category: 'Runtime' },
+    { name: 'PostgreSQL', category: 'Database' },
+    { name: 'Tailwind', category: 'Styling' },
+    { name: 'Git', category: 'VCS' }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Smaller heading to indicate secondary role */}
+      <h3 className="font-heading text-lg font-semibold text-foreground/70 uppercase tracking-wide">
+        Tools & Technologies
+      </h3>
+
+      {/* Tech Stack Grid - Minimal, clean */}
+      <div className="flex flex-wrap gap-3">
+        {technologies.map((tech) => (
+          <motion.div
+            key={tech.name}
+            onMouseEnter={() => !prefersReducedMotion && setHoveredTech(tech.name)}
+            onMouseLeave={() => setHoveredTech(null)}
+            animate={{
+              borderColor: hoveredTech === tech.name ? '#007BFF' : '#333333',
+              backgroundColor: hoveredTech === tech.name ? '#007BFF15' : 'transparent'
+            }}
+            transition={{ duration: 0.2 }}
+            className="px-4 py-2 text-sm font-mono border border-foreground/20 rounded-md text-foreground/60 cursor-default"
+          >
+            <motion.span
+              animate={{ opacity: hoveredTech === tech.name ? 1 : 0.6 }}
+              transition={{ duration: 0.2 }}
+            >
+              {tech.name}
+            </motion.span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Subtle note about tools */}
+      <p className="text-xs text-foreground/40 mt-6">
+        Tools evolve. Systems thinking is timeless.
+      </p>
+    </div>
+  );
+}
+
+// Helper hook for reduced motion preference
+function useReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  return prefersReducedMotion;
 }
 
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
