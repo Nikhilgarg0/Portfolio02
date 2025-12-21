@@ -162,6 +162,15 @@ function HeroSection() {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  
+  // Headline scroll effects
+  const headlineWeight = useTransform(scrollY, [0, 200], [700, 600]);
+  const headlineOpacity = useTransform(scrollY, [0, 250], [1, 0.5]);
+  const headlineScale = useTransform(scrollY, [0, 250], [1, 0.95]);
+  
+  // Badge scroll effects
+  const badgeY = useTransform(scrollY, [0, 300], [0, -30]);
+  const badgeOpacity = useTransform(scrollY, [0, 250], [1, 0.3]);
 
   return (
     <section ref={containerRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
@@ -175,35 +184,27 @@ function HeroSection() {
         style={{ y: y1, opacity }} 
         className="z-10 text-center max-w-4xl px-6"
       >
-        <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-mono tracking-wider">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-          </span>
-          AVAILABLE FOR 2026
-        </div>
+        {/* Intelligent Availability Badge */}
+        <AvailabilityBadge badgeY={badgeY} badgeOpacity={badgeOpacity} />
 
-        <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-[1.1]">
+        {/* Scroll-Reactive Headline */}
+        <motion.h1 
+          style={{ fontWeight: headlineWeight, opacity: headlineOpacity, scale: headlineScale }}
+          className="font-heading text-5xl md:text-7xl lg:text-8xl tracking-tight mb-8 leading-[1.1]"
+        >
           Building the <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/50">
             Digital Future
           </span>
-        </h1>
+        </motion.h1>
 
         <div className="h-24 md:h-16 flex items-center justify-center mb-12">
           <TypewriterEffect />
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <a 
-            href="#projects"
-            className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-lg overflow-hidden transition-all hover:scale-105"
-          >
-            <div className="absolute inset-0 w-full h-full bg-accent/0 group-hover:bg-accent transition-colors duration-300" />
-            <span className="relative flex items-center gap-2">
-              View Projects <ArrowRight size={18} />
-            </span>
-          </a>
+          {/* Enhanced CTA with Project Preview */}
+          <ProjectsCTA />
           <div className="flex gap-6">
             <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
             <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
@@ -257,6 +258,118 @@ function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode
     >
       {icon}
     </a>
+  );
+}
+
+// Intelligent Availability Badge with Scroll Reactivity
+function AvailabilityBadge({ badgeY, badgeOpacity }: { badgeY: any; badgeOpacity: any }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <motion.button
+      style={{ y: badgeY, opacity: badgeOpacity }}
+      onClick={() => setIsExpanded(!isExpanded)}
+      className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-mono tracking-wider hover:border-accent/50 transition-colors duration-300 cursor-pointer"
+    >
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+      </span>
+      <AnimatePresence mode="wait">
+        {isExpanded ? (
+          <motion.span
+            key="expanded"
+            initial={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: 'auto' }}
+            exit={{ opacity: 0, width: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            Open for internships & contract work through 2026
+          </motion.span>
+        ) : (
+          <motion.span
+            key="collapsed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            AVAILABLE FOR 2026
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
+}
+
+// Enhanced CTA with Directional Micro-Movement & Project Reveal
+function ProjectsCTA() {
+  const [isHovered, setIsHovered] = useState(false);
+  const [firstProjectName, setFirstProjectName] = useState<string>('');
+
+  useEffect(() => {
+    const fetchFirstProject = async () => {
+      const { items } = await BaseCrudService.getAll<Projects>('projects');
+      if (items.length > 0) {
+        setFirstProjectName(items[0].projectName || 'View Projects');
+      }
+    };
+    fetchFirstProject();
+  }, []);
+
+  return (
+    <motion.a
+      href="#projects"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-lg overflow-hidden"
+    >
+      {/* Background color shift on hover */}
+      <motion.div
+        className="absolute inset-0 w-full h-full bg-accent"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      <motion.span
+        className="relative flex items-center gap-2"
+        animate={{ x: isHovered ? 4 : 0 }}
+        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        {/* Text that reveals project name on hover */}
+        <AnimatePresence mode="wait">
+          {isHovered && firstProjectName ? (
+            <motion.span
+              key="project"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm"
+            >
+              Explore: {firstProjectName}
+            </motion.span>
+          ) : (
+            <motion.span
+              key="default"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              View Projects
+            </motion.span>
+          )}
+        </AnimatePresence>
+        
+        <motion.div
+          animate={{ x: isHovered ? 2 : 0 }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <ArrowRight size={18} />
+        </motion.div>
+      </motion.span>
+    </motion.a>
   );
 }
 
