@@ -173,7 +173,7 @@ function HeroSection() {
   const badgeOpacity = useTransform(scrollY, [0, 250], [1, 0.3]);
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+    <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 px-6 md:px-12">
       {/* Dynamic Background Grid */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
@@ -182,34 +182,50 @@ function HeroSection() {
 
       <motion.div 
         style={{ y: y1, opacity }} 
-        className="z-10 text-center max-w-4xl px-6"
+        className="z-10 w-full max-w-5xl"
       >
         {/* Intelligent Availability Badge */}
-        <AvailabilityBadge badgeY={badgeY} badgeOpacity={badgeOpacity} />
+        <div className="flex justify-center mb-12">
+          <AvailabilityBadge badgeY={badgeY} badgeOpacity={badgeOpacity} />
+        </div>
 
         {/* Scroll-Reactive Headline */}
         <motion.h1 
           style={{ fontWeight: headlineWeight, opacity: headlineOpacity, scale: headlineScale }}
-          className="font-heading text-5xl md:text-7xl lg:text-8xl tracking-tight mb-8 leading-[1.1]"
+          className="font-heading text-5xl md:text-6xl lg:text-7xl tracking-tight mb-8 leading-[1.2] text-center"
         >
-          Building the <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/50">
-            Digital Future
-          </span>
+          Building what's <br />
+          <span className="text-accent">next</span>
         </motion.h1>
 
-        <div className="h-24 md:h-16 flex items-center justify-center mb-12">
-          <TypewriterEffect />
+        {/* Subtitle */}
+        <p className="text-center text-lg md:text-xl text-foreground/70 mb-16 max-w-2xl mx-auto leading-relaxed">
+          Early-stage developer focused on web and mobile applications. Graduating 2026. Learning in public, building with intent.
+        </p>
+
+        {/* Code Snippet Display */}
+        <div className="mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-6 md:p-8 font-mono text-sm overflow-x-auto">
+          <div className="flex gap-2 mb-4">
+            <div className="w-3 h-3 rounded-full bg-red-500/60" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+            <div className="w-3 h-3 rounded-full bg-green-500/60" />
+          </div>
+          <CodeSnippet />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          {/* Enhanced CTA with Project Preview */}
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <ProjectsCTA />
-          <div className="flex gap-6">
-            <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
-            <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
-            <SocialLink href="#contact" icon={<Mail size={20} />} label="Email" />
-          </div>
+          <button className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium">
+            Get in Touch
+          </button>
+        </div>
+
+        {/* Social Links */}
+        <div className="flex justify-center gap-6">
+          <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
+          <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
+          <SocialLink href="#contact" icon={<Mail size={20} />} label="Email" />
         </div>
       </motion.div>
 
@@ -223,29 +239,22 @@ function HeroSection() {
   );
 }
 
-function TypewriterEffect() {
-  const [text, setText] = useState('');
-  const fullText = "Engineering discipline. Attention to detail. Growth mindset.";
-  
-  useEffect(() => {
-    let i = 0;
-    const timer = setInterval(() => {
-      if (i < fullText.length) {
-        setText(fullText.slice(0, i + 1));
-        i++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 50);
-    return () => clearInterval(timer);
-  }, []);
-
+// Code Snippet Component
+function CodeSnippet() {
   return (
-    <p className="font-mono text-lg md:text-xl text-foreground/60 h-full">
-      {text}<span className="animate-pulse text-accent">_</span>
-    </p>
+    <div className="space-y-2 text-foreground/80">
+      <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}
+      </div>
+      <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
+      <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
+      <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
+      <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
+      <div>{'}'};</div>
+    </div>
   );
 }
+
+
 
 function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   return (
@@ -763,6 +772,7 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
 function ContactSection() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [activeField, setActiveField] = useState<string | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -770,13 +780,16 @@ function ContactSection() {
     setTimeout(() => setFormState('success'), 1500);
   };
 
+  const subjects = ['Hiring', 'Collaboration', 'Feedback', 'Other'];
+
   return (
-    <section id="contact" className="py-32 px-6 md:px-12 max-w-4xl mx-auto">
+    <section id="contact" className="py-32 px-6 md:px-12 max-w-5xl mx-auto">
       <AnimatedElement>
-        <div className="text-center mb-16">
-          <h2 className="font-heading text-4xl font-bold mb-4">Let's Build Together</h2>
-          <p className="text-foreground/60">
-            Have a project in mind or just want to chat tech? I'm always open to new ideas.
+        <div className="mb-16">
+          <span className="text-accent font-mono text-sm uppercase tracking-wider">Contact</span>
+          <h2 className="font-heading text-4xl md:text-5xl font-bold mt-4 mb-6">Get in touch</h2>
+          <p className="text-foreground/60 text-lg">
+            Have a question or want to work together? Send me a message.
           </p>
         </div>
 
@@ -800,58 +813,91 @@ function ContactSection() {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Name & Email Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="relative">
-                <label className={`absolute left-0 transition-all duration-300 ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-2 text-foreground/40'}`}>
+                <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                   Name
                 </label>
                 <input 
                   id="name"
+                  placeholder="Your name"
                   required
                   onFocus={() => setActiveField('name')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border-b border-foreground/20 py-2 focus:outline-none focus:border-accent transition-colors"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30"
                 />
               </div>
               <div className="relative">
-                <label className={`absolute left-0 transition-all duration-300 ${activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-2 text-foreground/40'}`}>
+                <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                   Email
                 </label>
                 <input 
                   id="email"
                   type="email"
+                  placeholder="your@email.com"
                   required
                   onFocus={() => setActiveField('email')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border-b border-foreground/20 py-2 focus:outline-none focus:border-accent transition-colors"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30"
                 />
               </div>
             </div>
-            
-            <div className="relative mt-8">
-              <label className={`absolute left-0 transition-all duration-300 ${activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '-top-6 text-xs text-accent' : 'top-2 text-foreground/40'}`}>
+
+            {/* Subject Selection */}
+            <div>
+              <label className="block text-sm font-medium text-foreground/70 mb-3">Subject</label>
+              <div className="flex flex-wrap gap-3">
+                {subjects.map((subject) => (
+                  <button
+                    key={subject}
+                    type="button"
+                    onClick={() => setSelectedSubject(subject)}
+                    className={`px-4 py-2 rounded-lg border transition-all duration-300 text-sm font-medium ${
+                      selectedSubject === subject
+                        ? 'border-accent bg-accent/10 text-accent'
+                        : 'border-foreground/20 text-foreground/60 hover:border-foreground/40'
+                    }`}
+                  >
+                    {subject}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Message Field */}
+            <div className="relative">
+              <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                 Message
               </label>
               <textarea 
                 id="message"
+                placeholder="What's this about?"
                 required
-                rows={4}
+                rows={5}
                 onFocus={() => setActiveField('message')}
                 onBlur={() => setActiveField(null)}
-                className="w-full bg-transparent border-b border-foreground/20 py-2 focus:outline-none focus:border-accent transition-colors resize-none"
+                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none placeholder:text-foreground/30"
               />
+              <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
             </div>
 
-            <div className="flex justify-end">
+            {/* Submit Button */}
+            <div className="flex justify-end pt-4">
               <button 
                 type="submit"
                 disabled={formState === 'submitting'}
-                className="px-8 py-3 bg-foreground text-background font-medium rounded-lg hover:bg-accent hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-8 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
+                <Mail size={18} />
                 {formState === 'submitting' ? 'Sending...' : 'Send Message'}
-                {!formState && <ArrowRight size={18} />}
               </button>
             </div>
+
+            {/* Contact Alternative */}
+            <p className="text-xs text-foreground/40 text-center pt-4">
+              Prefer email? Reach me at <a href="mailto:hello@example.com" className="text-accent hover:underline">hello@example.com</a>
+            </p>
           </form>
         )}
       </AnimatedElement>
