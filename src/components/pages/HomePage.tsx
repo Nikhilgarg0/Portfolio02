@@ -1,11 +1,15 @@
-// HPI 1.6-G
+// HPI 1.6-G - Intentionally Engineered Portfolio
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal, Cpu } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal } from 'lucide-react';
 import { BaseCrudService } from '@/integrations';
 import { Experience, Projects } from '@/entities';
 import { Image } from '@/components/ui/image';
+
+// --- Easing Constants (Apple-like, subtle) ---
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const EASE_IN_OUT = [0.4, 0, 0.2, 1] as const;
 
 // --- Utility Components ---
 
@@ -22,37 +26,16 @@ const AnimatedElement: React.FC<AnimatedElementProps> = ({ children, className, 
   return (
     <div 
       ref={ref} 
-      className={`${className || ''} transition-all duration-700 ease-out`}
+      className={`${className || ''}`}
       style={{ 
         opacity: isInView ? 1 : 0, 
         transform: isInView ? 'translateY(0)' : 'translateY(20px)',
+        transition: `opacity 0.6s cubic-bezier(${EASE_OUT.join(',')}), transform 0.6s cubic-bezier(${EASE_OUT.join(',')})`,
         transitionDelay: `${delay}ms`
       }}
     >
       {children}
     </div>
-  );
-};
-
-const StickyCursor: React.FC = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
-  useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', updateMousePosition);
-    return () => window.removeEventListener('mousemove', updateMousePosition);
-  }, []);
-
-  return (
-    <div 
-      className="fixed top-0 left-0 w-6 h-6 border border-accent rounded-full pointer-events-none z-[100] mix-blend-difference hidden md:block"
-      style={{ 
-        transform: `translate(${mousePosition.x - 12}px, ${mousePosition.y - 12}px)`,
-        transition: 'transform 0.1s ease-out'
-      }}
-    />
   );
 };
 
@@ -62,8 +45,8 @@ export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [featuredProjects, setFeaturedProjects] = useState<Projects[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState<string>('');
 
-  // Data Fidelity Protocol: Fetching Canonical Data Sources
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,7 +59,6 @@ export default function HomePage() {
           return dateB - dateA;
         }));
         
-        // Taking top 3 for the sticky stack effect
         setFeaturedProjects(projectItems.slice(0, 3));
       } catch (error) {
         console.error("Failed to fetch data", error);
@@ -86,6 +68,26 @@ export default function HomePage() {
     };
     
     fetchData();
+  }, []);
+
+  // Track active section based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['about', 'experience', 'projects', 'contact'];
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom >= 200) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   if (loading) {
@@ -98,8 +100,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen selection:bg-accent/30 selection:text-accent font-paragraph overflow-x-clip">
-      <StickyCursor />
-      <Header />
+      <Header activeSection={activeSection} />
       <HeroSection />
       <AboutSection />
       <ExperienceSection experiences={experiences} />
@@ -110,9 +111,9 @@ export default function HomePage() {
   );
 }
 
-// --- Sections ---
+// --- Header with Active Section Tracking ---
 
-function Header() {
+function Header({ activeSection }: { activeSection: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -121,9 +122,11 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = ['About', 'Experience', 'Projects', 'Contact'];
+
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ? 'bg-background/80 backdrop-blur-md py-4 border-b border-white/5' : 'bg-transparent py-8'
       }`}
     >
@@ -136,15 +139,28 @@ function Header() {
         </Link>
         
         <div className="flex items-center gap-8">
-          {['About', 'Experience', 'Projects', 'Contact'].map((item) => (
-            <a 
-              key={item}
-              href={`#${item.toLowerCase()}`} 
-              className="font-paragraph text-sm text-foreground/70 hover:text-accent transition-colors duration-300 hidden md:block"
-            >
-              {item}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const isActive = activeSection === item.toLowerCase();
+            return (
+              <a 
+                key={item}
+                href={`#${item.toLowerCase()}`} 
+                className="font-paragraph text-sm text-foreground/70 hover:text-accent transition-colors duration-300 hidden md:block relative group"
+              >
+                {item}
+                {/* Subtle underline animation on hover */}
+                <span 
+                  className={`absolute bottom-0 left-0 h-px bg-accent transition-all duration-300 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                />
+                {/* Persistent active state */}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 w-full h-px bg-accent" />
+                )}
+              </a>
+            );
+          })}
           <Link 
             to="/resume" 
             className="px-5 py-2 border border-foreground/20 rounded-full text-sm hover:border-accent hover:text-accent transition-all duration-300"
@@ -157,24 +173,18 @@ function Header() {
   );
 }
 
+// --- Hero Section ---
+
 function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-  
-  // Headline scroll effects
-  const headlineWeight = useTransform(scrollY, [0, 200], [700, 600]);
-  const headlineOpacity = useTransform(scrollY, [0, 250], [1, 0.5]);
-  const headlineScale = useTransform(scrollY, [0, 250], [1, 0.95]);
-  
-  // Badge scroll effects
-  const badgeY = useTransform(scrollY, [0, 300], [0, -30]);
-  const badgeOpacity = useTransform(scrollY, [0, 250], [1, 0.3]);
+  const codeOpacity = useTransform(scrollY, [0, 200], [1, 0.6]);
 
   return (
     <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 px-6 md:px-12">
-      {/* Dynamic Background Grid */}
+      {/* Background Grid */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
@@ -184,34 +194,37 @@ function HeroSection() {
         style={{ y: y1, opacity }} 
         className="z-10 w-full max-w-5xl"
       >
-        {/* Intelligent Availability Badge */}
+        {/* Availability Badge */}
         <div className="flex justify-center mb-12">
-          <AvailabilityBadge badgeY={badgeY} badgeOpacity={badgeOpacity} />
+          <AvailabilityBadge />
         </div>
 
-        {/* Scroll-Reactive Headline */}
-        <motion.h1 
-          style={{ fontWeight: headlineWeight, opacity: headlineOpacity, scale: headlineScale }}
-          className="font-heading text-5xl md:text-6xl lg:text-7xl tracking-tight mb-8 leading-[1.2] text-center"
-        >
+        {/* Headline */}
+        <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl tracking-tight mb-8 leading-[1.2] text-center">
           Building what's <br />
           <span className="text-accent">next</span>
-        </motion.h1>
+        </h1>
 
         {/* Subtitle */}
         <p className="text-center text-lg md:text-xl text-foreground/70 mb-16 max-w-2xl mx-auto leading-relaxed">
           Early-stage developer focused on web and mobile applications. Graduating 2026. Learning in public, building with intent.
         </p>
 
-        {/* Code Snippet Display */}
-        <div className="mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-6 md:p-8 font-mono text-sm overflow-x-auto">
+        {/* Code Snippet with Soft Hover Glow */}
+        <motion.div 
+          style={{ opacity: codeOpacity }}
+          className="mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-6 md:p-8 font-mono text-sm overflow-x-auto group hover:border-accent/30 hover:bg-foreground/[0.08] transition-all duration-500"
+        >
+          {/* Soft glow on hover */}
+          <div className="absolute inset-0 rounded-lg bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10" />
+          
           <div className="flex gap-2 mb-4">
             <div className="w-3 h-3 rounded-full bg-red-500/60" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
             <div className="w-3 h-3 rounded-full bg-green-500/60" />
           </div>
           <CodeSnippet />
-        </div>
+        </motion.div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -243,8 +256,7 @@ function HeroSection() {
 function CodeSnippet() {
   return (
     <div className="space-y-2 text-foreground/80">
-      <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}
-      </div>
+      <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
       <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
       <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
       <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
@@ -254,8 +266,6 @@ function CodeSnippet() {
   );
 }
 
-
-
 function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   return (
     <a 
@@ -263,20 +273,19 @@ function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="p-3 rounded-full border border-foreground/10 text-foreground/60 hover:text-accent hover:border-accent transition-all duration-300 hover:-translate-y-1"
+      className="p-3 rounded-full border border-foreground/10 text-foreground/60 hover:text-accent hover:border-accent transition-all duration-300"
     >
       {icon}
     </a>
   );
 }
 
-// Intelligent Availability Badge with Scroll Reactivity
-function AvailabilityBadge({ badgeY, badgeOpacity }: { badgeY: any; badgeOpacity: any }) {
+// Availability Badge
+function AvailabilityBadge() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <motion.button
-      style={{ y: badgeY, opacity: badgeOpacity }}
       onClick={() => setIsExpanded(!isExpanded)}
       className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-mono tracking-wider hover:border-accent/50 transition-colors duration-300 cursor-pointer"
     >
@@ -310,7 +319,7 @@ function AvailabilityBadge({ badgeY, badgeOpacity }: { badgeY: any; badgeOpacity
   );
 }
 
-// Enhanced CTA with Directional Micro-Movement & Project Reveal
+// Enhanced CTA Button
 function ProjectsCTA() {
   const [isHovered, setIsHovered] = useState(false);
   const [firstProjectName, setFirstProjectName] = useState<string>('');
@@ -332,7 +341,6 @@ function ProjectsCTA() {
       onHoverEnd={() => setIsHovered(false)}
       className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-lg overflow-hidden"
     >
-      {/* Background color shift on hover */}
       <motion.div
         className="absolute inset-0 w-full h-full bg-accent"
         initial={{ opacity: 0 }}
@@ -343,9 +351,8 @@ function ProjectsCTA() {
       <motion.span
         className="relative flex items-center gap-2"
         animate={{ x: isHovered ? 4 : 0 }}
-        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.3, ease: EASE_OUT }}
       >
-        {/* Text that reveals project name on hover */}
         <AnimatePresence mode="wait">
           {isHovered && firstProjectName ? (
             <motion.span
@@ -373,7 +380,7 @@ function ProjectsCTA() {
         
         <motion.div
           animate={{ x: isHovered ? 2 : 0 }}
-          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.3, ease: EASE_OUT }}
         >
           <ArrowRight size={18} />
         </motion.div>
@@ -382,6 +389,8 @@ function ProjectsCTA() {
   );
 }
 
+// --- About Section ---
+
 function AboutSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -389,38 +398,34 @@ function AboutSection() {
     offset: ["start end", "end start"]
   });
   
-  // Subtle parallax for image (slow, predictable)
   const imageY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
     <section id="about" className="py-32 px-6 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-        {/* Image Column - Subtle Parallax & Hover Zoom */}
+        {/* Image Column with Parallax */}
         <div className="lg:col-span-4">
           <AnimatedElement>
             <h2 className="font-heading text-4xl font-bold mb-8 flex items-center gap-4">
               <span className="w-12 h-[1px] bg-accent"></span>
               About
             </h2>
-            <ImageWithInteraction imageY={imageY} />
+            <ImageWithParallax imageY={imageY} />
           </AnimatedElement>
         </div>
 
-        {/* Content Column - Hierarchy-Driven */}
+        {/* Content Column */}
         <div className="lg:col-span-8 flex flex-col justify-start">
-          {/* Engineering Philosophy Statement */}
           <AnimatedElement delay={200}>
             <p className="font-heading text-2xl md:text-3xl leading-relaxed text-foreground/90 mb-16">
               I design systems that scale. Every decision prioritizes <span className="text-accent">readability, maintainability, and performance</span> over expedience.
             </p>
           </AnimatedElement>
 
-          {/* The Craft - Primary Focus */}
           <AnimatedElement delay={300}>
             <CraftSection />
           </AnimatedElement>
 
-          {/* The Stack - Secondary Support */}
           <AnimatedElement delay={400}>
             <StackSection />
           </AnimatedElement>
@@ -430,8 +435,8 @@ function AboutSection() {
   );
 }
 
-// Image with Subtle Parallax & Hover Zoom
-function ImageWithInteraction({ imageY }: { imageY: any }) {
+// Image with Parallax
+function ImageWithParallax({ imageY }: { imageY: any }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -443,7 +448,7 @@ function ImageWithInteraction({ imageY }: { imageY: any }) {
     >
       <motion.div
         animate={{ scale: isHovered ? 1.02 : 1 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.4, ease: EASE_OUT }}
         className="w-full h-full"
       >
         <Image 
@@ -453,7 +458,6 @@ function ImageWithInteraction({ imageY }: { imageY: any }) {
         />
       </motion.div>
       
-      {/* Subtle overlay - no gradient, just a border shift on hover */}
       <motion.div
         animate={{ opacity: isHovered ? 0.08 : 0 }}
         transition={{ duration: 0.3 }}
@@ -463,19 +467,17 @@ function ImageWithInteraction({ imageY }: { imageY: any }) {
   );
 }
 
-// The Craft - Dominant Section
+// The Craft Section - Dominant
 function CraftSection() {
   const [isFocused, setIsFocused] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
 
   return (
     <div
-      onMouseEnter={() => !prefersReducedMotion && setIsFocused(true)}
+      onMouseEnter={() => setIsFocused(true)}
       onMouseLeave={() => setIsFocused(false)}
       className="mb-16 pb-16 border-b border-foreground/10"
     >
       <div className="space-y-6">
-        {/* Icon - Larger, more prominent */}
         <motion.div
           animate={{ opacity: isFocused ? 1 : 0.7 }}
           transition={{ duration: 0.2 }}
@@ -484,12 +486,10 @@ function CraftSection() {
           <Code2 size={28} />
         </motion.div>
 
-        {/* Heading */}
         <h3 className="font-heading text-3xl font-bold text-foreground">
           The Craft
         </h3>
 
-        {/* Description - Engineering-focused */}
         <motion.p
           animate={{ color: isFocused ? '#E0E0E0' : '#999999' }}
           transition={{ duration: 0.2 }}
@@ -498,7 +498,6 @@ function CraftSection() {
           I approach every problem as a systems design challenge. Code is communication—clarity and structure matter as much as functionality. I prioritize:
         </motion.p>
 
-        {/* Core Principles - Subtle List */}
         <ul className="space-y-3 mt-6">
           {[
             { label: 'Readability', desc: 'Code that explains itself through clear naming and structure' },
@@ -513,7 +512,7 @@ function CraftSection() {
   );
 }
 
-// Individual Craft Principle with Subtle Underline
+// Individual Craft Principle
 function CraftPrinciple({ label, desc, isFocused }: { label: string; desc: string; isFocused: boolean }) {
   return (
     <motion.li
@@ -534,10 +533,9 @@ function CraftPrinciple({ label, desc, isFocused }: { label: string; desc: strin
   );
 }
 
-// The Stack - Secondary, Supporting Role
+// The Stack Section - Supporting Role
 function StackSection() {
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   const technologies = [
     { name: 'React', category: 'Frontend' },
@@ -550,36 +548,28 @@ function StackSection() {
 
   return (
     <div className="space-y-6">
-      {/* Smaller heading to indicate secondary role */}
       <h3 className="font-heading text-lg font-semibold text-foreground/70 uppercase tracking-wide">
         Tools & Technologies
       </h3>
 
-      {/* Tech Stack Grid - Minimal, clean */}
       <div className="flex flex-wrap gap-3">
         {technologies.map((tech) => (
           <motion.div
             key={tech.name}
-            onMouseEnter={() => !prefersReducedMotion && setHoveredTech(tech.name)}
+            onMouseEnter={() => setHoveredTech(tech.name)}
             onMouseLeave={() => setHoveredTech(null)}
             animate={{
-              borderColor: hoveredTech === tech.name ? '#007BFF' : '#333333',
-              backgroundColor: hoveredTech === tech.name ? '#007BFF15' : 'transparent'
+              opacity: hoveredTech === tech.name ? 1 : 0.6,
+              borderColor: hoveredTech === tech.name ? '#007BFF' : '#333333'
             }}
             transition={{ duration: 0.2 }}
             className="px-4 py-2 text-sm font-mono border border-foreground/20 rounded-md text-foreground/60 cursor-default"
           >
-            <motion.span
-              animate={{ opacity: hoveredTech === tech.name ? 1 : 0.6 }}
-              transition={{ duration: 0.2 }}
-            >
-              {tech.name}
-            </motion.span>
+            {tech.name}
           </motion.div>
         ))}
       </div>
 
-      {/* Subtle note about tools */}
       <p className="text-xs text-foreground/40 mt-6">
         Tools evolve. Systems thinking is timeless.
       </p>
@@ -587,24 +577,7 @@ function StackSection() {
   );
 }
 
-// Helper hook for reduced motion preference
-function useReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setPrefersReducedMotion(e.matches);
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  return prefersReducedMotion;
-}
+// --- Experience Section ---
 
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
@@ -615,12 +588,12 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
         </AnimatedElement>
 
         <div className="relative">
-          {/* Central Line */}
+          {/* Central Timeline */}
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-foreground/10 -translate-x-1/2 hidden md:block" />
 
           <div className="space-y-24">
             {experiences.map((exp, index) => (
-              <ExperienceItem key={exp._id} experience={exp} index={index} />
+              <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
             ))}
           </div>
         </div>
@@ -629,17 +602,41 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   );
 }
 
-function ExperienceItem({ experience, index }: { experience: Experience; index: number }) {
+// Experience Item with Hover Elevation
+function ExperienceItem({ experience, index, isFirst }: { experience: Experience; index: number; isFirst: boolean }) {
   const isEven = index % 2 === 0;
-  
+  const [isHovered, setIsHovered] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: false, margin: "-20% 0px" });
+
   return (
-    <div className={`flex flex-col md:flex-row gap-8 md:gap-0 items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
+    <div ref={ref} className={`flex flex-col md:flex-row gap-8 md:gap-0 items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
       <div className="flex-1 w-full md:w-1/2">
         <AnimatedElement delay={index * 100} className={`flex ${isEven ? 'md:justify-start' : 'md:justify-end'}`}>
-          <div className={`w-full md:w-4/5 p-8 rounded-2xl bg-background border border-foreground/5 hover:border-accent/30 transition-colors duration-300 relative group ${isEven ? 'md:ml-12' : 'md:mr-12'}`}>
+          <motion.div
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            animate={{
+              y: isHovered ? -4 : 0,
+              boxShadow: isHovered 
+                ? '0 20px 40px rgba(0, 123, 255, 0.1)' 
+                : '0 0px 0px rgba(0, 0, 0, 0)'
+            }}
+            transition={{ duration: 0.3, ease: EASE_OUT }}
+            className={`w-full md:w-4/5 p-8 rounded-2xl bg-background border border-foreground/5 transition-colors duration-300 relative group ${isEven ? 'md:ml-12' : 'md:mr-12'}`}
+          >
             {/* Connector Line */}
             <div className={`absolute top-1/2 w-12 h-px bg-accent/30 hidden md:block ${isEven ? '-left-12' : '-right-12'}`} />
-            <div className={`absolute top-1/2 w-3 h-3 rounded-full bg-accent hidden md:block ${isEven ? '-left-[54px]' : '-right-[54px]'} translate-y-[-50%]`} />
+            
+            {/* Timeline Dot with State */}
+            <motion.div
+              animate={{
+                scale: isFirst || isInView ? 1.2 : 1,
+                backgroundColor: isFirst || isInView ? '#007BFF' : '#666666'
+              }}
+              transition={{ duration: 0.3, ease: EASE_OUT }}
+              className={`absolute top-1/2 w-3 h-3 rounded-full hidden md:block ${isEven ? '-left-[54px]' : '-right-[54px]'} translate-y-[-50%]`}
+            />
 
             <span className="inline-block px-3 py-1 mb-4 text-xs font-mono text-accent bg-accent/5 rounded-full">
               {experience.startDate ? new Date(experience.startDate).getFullYear() : 'Present'}
@@ -653,14 +650,16 @@ function ExperienceItem({ experience, index }: { experience: Experience; index: 
                 {experience.description}
               </p>
             )}
-          </div>
+          </motion.div>
         </AnimatedElement>
       </div>
-      <div className="hidden md:block w-px" /> {/* Spacer for center line */}
-      <div className="flex-1 w-full md:w-1/2" /> {/* Empty space for balance */}
+      <div className="hidden md:block w-px" />
+      <div className="flex-1 w-full md:w-1/2" />
     </div>
   );
 }
+
+// --- Projects Section ---
 
 function ProjectsSection({ projects }: { projects: Projects[] }) {
   return (
@@ -691,6 +690,7 @@ function ProjectsSection({ projects }: { projects: Projects[] }) {
   );
 }
 
+// Project Card with Reveal Interaction
 function ProjectCard({ project, index }: { project: Projects; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -700,6 +700,8 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
 
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
+  
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div ref={ref} className="group relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[60vh]">
@@ -719,6 +721,26 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
             <p className="text-lg text-foreground/70 leading-relaxed max-w-xl">
               {project.projectDescription}
             </p>
+
+            {/* Reveal on Hover - Architecture/Decisions */}
+            <motion.div
+              animate={{ opacity: isHovered ? 1 : 0, height: isHovered ? 'auto' : 0 }}
+              transition={{ duration: 0.3, ease: EASE_OUT }}
+              className="overflow-hidden"
+            >
+              {project.architectureDetails && (
+                <div className="mt-4 p-4 bg-foreground/5 border border-foreground/10 rounded-lg">
+                  <p className="text-xs font-mono text-accent/70 uppercase tracking-wider mb-2">Architecture</p>
+                  <p className="text-sm text-foreground/60">{project.architectureDetails}</p>
+                </div>
+              )}
+              {project.designDecisions && (
+                <div className="mt-3 p-4 bg-foreground/5 border border-foreground/10 rounded-lg">
+                  <p className="text-xs font-mono text-accent/70 uppercase tracking-wider mb-2">Design Decisions</p>
+                  <p className="text-sm text-foreground/60">{project.designDecisions}</p>
+                </div>
+              )}
+            </motion.div>
 
             <div className="flex flex-wrap gap-3 pt-4">
               {project.techStack?.split(',').map((tech) => (
@@ -747,6 +769,8 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
       <div className={`order-1 ${index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
         <motion.div 
           style={{ y, opacity }}
+          onHoverStart={() => setIsHovered(true)}
+          onHoverEnd={() => setIsHovered(false)}
           className="relative aspect-video rounded-xl overflow-hidden bg-foreground/5 border border-foreground/10 group-hover:border-accent/30 transition-colors duration-500"
         >
           {project.mainScreenshot ? (
@@ -761,13 +785,14 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
             </div>
           )}
           
-          {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-transparent to-transparent opacity-60" />
         </motion.div>
       </div>
     </div>
   );
 }
+
+// --- Contact Section ---
 
 function ContactSection() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
@@ -813,7 +838,7 @@ function ContactSection() {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Name & Email Row */}
+            {/* Name & Email */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="relative">
                 <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
@@ -865,7 +890,7 @@ function ContactSection() {
               </div>
             </div>
 
-            {/* Message Field */}
+            {/* Message */}
             <div className="relative">
               <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                 Message
@@ -882,7 +907,7 @@ function ContactSection() {
               <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <div className="flex justify-end pt-4">
               <button 
                 type="submit"
@@ -894,7 +919,6 @@ function ContactSection() {
               </button>
             </div>
 
-            {/* Contact Alternative */}
             <p className="text-xs text-foreground/40 text-center pt-4">
               Prefer email? Reach me at <a href="mailto:hello@example.com" className="text-accent hover:underline">hello@example.com</a>
             </p>
@@ -904,6 +928,8 @@ function ContactSection() {
     </section>
   );
 }
+
+// --- Footer ---
 
 function Footer() {
   return (
