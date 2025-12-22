@@ -358,11 +358,11 @@ function CodeSnippet() {
 
               <div className="space-y-2 text-foreground/80 font-mono text-sm md:text-base mb-6">
                 <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
-                <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
+                <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Nikhil"</span>,</div>
                 <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
                 <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
                 <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
-                <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"React"</span>, <span className="text-green-400">"TypeScript"</span>, <span className="text-green-400">"Node.js"</span>],</div>
+                <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"MERN"</span>, <span className="text-green-400">"Expo"</span>, <span className="text-green-400">"Android Studio"</span>],</div>
                 <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">3</span> <span className="text-foreground/60">years,</span></div>
                 <div className="ml-4"><span className="text-foreground/60">openToWork:</span> <span className="text-blue-400">true</span></div>
                 <div>{'}'};</div>
