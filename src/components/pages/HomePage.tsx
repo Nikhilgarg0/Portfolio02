@@ -320,20 +320,9 @@ function AvailabilityBadge() {
   );
 }
 
-// Enhanced CTA Button
+// Enhanced CTA Button - CHANGE 1: Button text stays "View Projects" on hover with visual effects
 function ProjectsCTA() {
   const [isHovered, setIsHovered] = useState(false);
-  const [firstProjectName, setFirstProjectName] = useState<string>('');
-
-  useEffect(() => {
-    const fetchFirstProject = async () => {
-      const { items } = await BaseCrudService.getAll<Projects>('projects');
-      if (items.length > 0) {
-        setFirstProjectName(items[0].projectName || 'View Projects');
-      }
-    };
-    fetchFirstProject();
-  }, []);
 
   return (
     <motion.a
@@ -342,10 +331,22 @@ function ProjectsCTA() {
       onHoverEnd={() => setIsHovered(false)}
       className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-lg overflow-hidden"
     >
+      {/* Background color shift on hover */}
       <motion.div
         className="absolute inset-0 w-full h-full bg-accent"
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+      />
+      
+      {/* Glow effect on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-lg"
+        animate={{ 
+          boxShadow: isHovered 
+            ? '0 0 20px rgba(0, 123, 255, 0.4)' 
+            : '0 0 0px rgba(0, 123, 255, 0)'
+        }}
         transition={{ duration: 0.3 }}
       />
       
@@ -354,33 +355,13 @@ function ProjectsCTA() {
         animate={{ x: isHovered ? 4 : 0 }}
         transition={{ duration: 0.3, ease: EASE_OUT }}
       >
-        <AnimatePresence mode="wait">
-          {isHovered && firstProjectName ? (
-            <motion.span
-              key="project"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              transition={{ duration: 0.2 }}
-              className="text-sm"
-            >
-              Explore: {firstProjectName}
-            </motion.span>
-          ) : (
-            <motion.span
-              key="default"
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              View Projects
-            </motion.span>
-          )}
-        </AnimatePresence>
+        <span className="text-sm">View Projects</span>
         
         <motion.div
-          animate={{ x: isHovered ? 2 : 0 }}
+          animate={{ 
+            x: isHovered ? 2 : 0,
+            rotate: isHovered ? 15 : 0
+          }}
           transition={{ duration: 0.3, ease: EASE_OUT }}
         >
           <ArrowRight size={18} />
@@ -603,7 +584,7 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   );
 }
 
-// Experience Item with Hover Elevation
+// Experience Item with Hover Elevation - CHANGE 2: Cards pop out from timeline dot on scroll
 function ExperienceItem({ experience, index, isFirst }: { experience: Experience; index: number; isFirst: boolean }) {
   const isEven = index % 2 === 0;
   const [isHovered, setIsHovered] = useState(false);
@@ -618,12 +599,13 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             animate={{
-              y: isHovered ? -4 : 0,
-              boxShadow: isHovered 
-                ? '0 20px 40px rgba(0, 123, 255, 0.1)' 
-                : '0 0px 0px rgba(0, 0, 0, 0)'
+              y: isInView ? -8 : 0,
+              boxShadow: isInView 
+                ? '0 20px 40px rgba(0, 123, 255, 0.15)' 
+                : '0 0px 0px rgba(0, 0, 0, 0)',
+              scale: isInView ? 1.02 : 1
             }}
-            transition={{ duration: 0.3, ease: EASE_OUT }}
+            transition={{ duration: 0.4, ease: EASE_OUT }}
             className={`w-full md:w-4/5 p-8 rounded-2xl bg-background border border-foreground/5 transition-colors duration-300 relative group ${isEven ? 'md:ml-12' : 'md:mr-12'}`}
           >
             {/* Connector Line */}
@@ -632,10 +614,10 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
             {/* Timeline Dot with State */}
             <motion.div
               animate={{
-                scale: isFirst || isInView ? 1.2 : 1,
+                scale: isFirst || isInView ? 1.4 : 1,
                 backgroundColor: isFirst || isInView ? '#007BFF' : '#666666'
               }}
-              transition={{ duration: 0.3, ease: EASE_OUT }}
+              transition={{ duration: 0.4, ease: EASE_OUT }}
               className={`absolute top-1/2 w-3 h-3 rounded-full hidden md:block ${isEven ? '-left-[54px]' : '-right-[54px]'} translate-y-[-50%]`}
             />
 
@@ -691,7 +673,7 @@ function ProjectsSection({ projects }: { projects: Projects[] }) {
   );
 }
 
-// Project Card with Reveal Interaction
+// Project Card with Reveal Interaction - CHANGE 3: Hide live demo link on mobile
 function ProjectCard({ project, index }: { project: Projects; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -758,7 +740,7 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
                 </a>
               )}
               {project.liveLink && (
-                <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-accent transition-colors">
+                <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="hidden md:flex items-center gap-2 text-sm font-medium hover:text-accent transition-colors">
                   <ExternalLink size={18} /> Live Demo
                 </a>
               )}
