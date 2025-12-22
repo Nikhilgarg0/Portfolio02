@@ -319,7 +319,7 @@ function CodeSnippet() {
       >
         <div className="space-y-2 text-foreground/80">
           <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
-          <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
+          <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Nikhil"</span>,</div>
           <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
           <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
           <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
