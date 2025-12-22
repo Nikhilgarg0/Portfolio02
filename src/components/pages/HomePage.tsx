@@ -252,7 +252,7 @@ function HeroSection() {
 
         <h1 className="font-heading text-3xl md:text-6xl lg:text-7xl tracking-tight mb-6 md:mb-8 leading-[1.2] text-center">
           NIKHIL GARG<br />
-          <span className="text-accent"></span>
+          <span className="text-accent">; )</span>
         </h1>
 
         <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2">
