@@ -1,8 +1,8 @@
 // HPI 1.6-G - Intentionally Engineered Portfolio
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal, Download } from 'lucide-react';
+import { ArrowRight, Github, Linkedin, Mail, ChevronDown, ExternalLink, Code2, Terminal } from 'lucide-react';
 import { BaseCrudService } from '@/integrations';
 import { Experience, Projects } from '@/entities';
 import { Image } from '@/components/ui/image';
@@ -11,8 +11,68 @@ import { Image } from '@/components/ui/image';
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const EASE_IN_OUT = [0.4, 0, 0.2, 1] as const;
 
-// --- Utility Components ---
+// --- Custom Cursor Component ---
+function CustomCursor() {
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const springConfig = { damping: 25, stiffness: 700 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+  const [isHoveringInteractive, setIsHoveringInteractive] = useState(false);
 
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+
+      const target = e.target as HTMLElement;
+      const isInteractive = 
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('[role="button"]') ||
+        target.classList.contains('cursor-pointer');
+      
+      setIsHoveringInteractive(!!isInteractive);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [cursorX, cursorY]);
+
+  return (
+    <>
+      <style>{`
+        * { cursor: none !important; }
+        input, textarea { cursor: text !important; }
+      `}</style>
+
+      <motion.div
+        style={{
+          x: cursorXSpring,
+          y: cursorYSpring,
+        }}
+        className="fixed w-8 h-8 border border-accent/40 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+      />
+
+      <motion.div
+        style={{
+          x: cursorX,
+          y: cursorY,
+        }}
+        animate={{
+          scale: isHoveringInteractive ? 1.5 : 1,
+          backgroundColor: isHoveringInteractive ? '#007BFF' : 'rgba(0, 123, 255, 0.6)',
+        }}
+        transition={{ duration: 0.2 }}
+        className="fixed w-2 h-2 bg-accent rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2"
+      />
+    </>
+  );
+}
+
+// --- Utility Components ---
 type AnimatedElementProps = {
   children: React.ReactNode;
   className?: string;
@@ -40,7 +100,6 @@ const AnimatedElement: React.FC<AnimatedElementProps> = ({ children, className, 
 };
 
 // --- Main Page Component ---
-
 export default function HomePage() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [featuredProjects, setFeaturedProjects] = useState<Projects[]>([]);
@@ -70,7 +129,6 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  // Track active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['about', 'experience', 'projects', 'contact'];
@@ -100,6 +158,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen selection:bg-accent/30 selection:text-accent font-paragraph overflow-x-clip">
+      <CustomCursor />
       <Header activeSection={activeSection} />
       <HeroSection />
       <AboutSection />
@@ -112,7 +171,6 @@ export default function HomePage() {
 }
 
 // --- Header with Active Section Tracking ---
-
 function Header({ activeSection }: { activeSection: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -148,16 +206,11 @@ function Header({ activeSection }: { activeSection: string }) {
                 className="font-paragraph text-sm text-foreground/70 hover:text-accent transition-colors duration-300 hidden md:block relative group"
               >
                 {item}
-                {/* Subtle underline animation on hover */}
                 <span 
                   className={`absolute bottom-0 left-0 h-px bg-accent transition-all duration-300 ${
                     isActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                 />
-                {/* Persistent active state */}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-px bg-accent" />
-                )}
               </a>
             );
           })}
@@ -175,7 +228,6 @@ function Header({ activeSection }: { activeSection: string }) {
 }
 
 // --- Hero Section ---
-
 function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
@@ -185,7 +237,6 @@ function HeroSection() {
 
   return (
     <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-20 md:pt-32 pb-16 md:pb-24 px-4 md:px-12">
-      {/* Background Grid */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[200px] w-[200px] md:h-[310px] md:w-[310px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
@@ -195,30 +246,23 @@ function HeroSection() {
         style={{ y: y1, opacity }} 
         className="z-10 w-full max-w-5xl"
       >
-        {/* Availability Badge */}
         <div className="flex justify-center mb-8 md:mb-12">
           <AvailabilityBadge />
         </div>
 
-        {/* Headline */}
         <h1 className="font-heading text-3xl md:text-6xl lg:text-7xl tracking-tight mb-6 md:mb-8 leading-[1.2] text-center">
           Building what's <br />
           <span className="text-accent">next</span>
         </h1>
 
-        {/* Subtitle */}
         <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2">
           Early-stage developer focused on web and mobile applications. Graduating 2026. Learning in public, building with intent.
         </p>
 
-        {/* Code Snippet with Soft Hover Glow */}
         <motion.div 
           style={{ opacity: codeOpacity }}
           className="mb-12 md:mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-4 md:p-8 font-mono text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-foreground/[0.08] transition-all duration-500"
         >
-          {/* Soft glow on hover */}
-          <div className="absolute inset-0 rounded-lg bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10" />
-          
           <div className="flex gap-2 mb-4">
             <div className="w-3 h-3 rounded-full bg-red-500/60" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
@@ -228,7 +272,6 @@ function HeroSection() {
           <p className="text-xs text-foreground/40 mt-4 text-center">Click to expand</p>
         </motion.div>
 
-        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center mb-10 md:mb-12">
           <ProjectsCTA />
           <a href="#contact" className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium text-sm md:text-base">
@@ -236,7 +279,6 @@ function HeroSection() {
           </a>
         </div>
 
-        {/* Social Links */}
         <div className="flex justify-center gap-4 md:gap-6">
           <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
           <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
@@ -258,10 +300,20 @@ function HeroSection() {
 function CodeSnippet() {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  useEffect(() => {
+    if (isExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isExpanded]);
+
   return (
     <>
       <motion.div
-        layoutId="codeSnippet"
         onClick={() => setIsExpanded(true)}
         className="cursor-pointer"
       >
@@ -285,7 +337,10 @@ function CodeSnippet() {
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
           >
             <motion.div
-              layoutId="codeSnippet"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
               onClick={(e) => e.stopPropagation()}
               className="bg-foreground/5 border border-foreground/10 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-auto"
             >
@@ -377,7 +432,7 @@ function AvailabilityBadge() {
   );
 }
 
-// Enhanced CTA Button - CHANGE 1: Button text stays "View Projects" on hover with visual effects
+// Enhanced CTA Button
 function ProjectsCTA() {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -388,22 +443,10 @@ function ProjectsCTA() {
       onHoverEnd={() => setIsHovered(false)}
       className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-lg overflow-hidden"
     >
-      {/* Background color shift on hover */}
       <motion.div
         className="absolute inset-0 w-full h-full bg-accent"
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-      />
-      
-      {/* Glow effect on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-lg"
-        animate={{ 
-          boxShadow: isHovered 
-            ? '0 0 20px rgba(0, 123, 255, 0.4)' 
-            : '0 0 0px rgba(0, 123, 255, 0)'
-        }}
         transition={{ duration: 0.3 }}
       />
       
@@ -429,7 +472,6 @@ function ProjectsCTA() {
 }
 
 // --- About Section ---
-
 function AboutSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -442,7 +484,6 @@ function AboutSection() {
   return (
     <section id="about" className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-start">
-        {/* Image Column with Parallax */}
         <div className="lg:col-span-4">
           <AnimatedElement>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 md:mb-8 flex items-center gap-4">
@@ -453,7 +494,6 @@ function AboutSection() {
           </AnimatedElement>
         </div>
 
-        {/* Content Column */}
         <div className="lg:col-span-8 flex flex-col justify-start">
           <AnimatedElement delay={200}>
             <p className="font-heading text-xl md:text-3xl leading-relaxed text-foreground/90 mb-12 md:mb-16">
@@ -506,7 +546,7 @@ function ImageWithParallax({ imageY }: { imageY: any }) {
   );
 }
 
-// The Craft Section - Dominant
+// The Craft Section
 function CraftSection() {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -572,7 +612,7 @@ function CraftPrinciple({ label, desc, isFocused }: { label: string; desc: strin
   );
 }
 
-// The Stack Section - Supporting Role
+// The Stack Section
 function StackSection() {
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
@@ -617,7 +657,6 @@ function StackSection() {
 }
 
 // --- Experience Section ---
-
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
     <section id="experience" className="py-20 md:py-32 bg-foreground/[0.02] border-y border-foreground/5">
@@ -627,7 +666,6 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
         </AnimatedElement>
 
         <div className="relative">
-          {/* Central Timeline */}
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-foreground/10 -translate-x-1/2 hidden md:block" />
 
           <div className="space-y-16 md:space-y-24">
@@ -641,7 +679,7 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   );
 }
 
-// Experience Item with Hover Elevation - CHANGE 2: Cards pop out from timeline dot on scroll
+// Experience Item with Hover Elevation
 function ExperienceItem({ experience, index, isFirst }: { experience: Experience; index: number; isFirst: boolean }) {
   const isEven = index % 2 === 0;
   const [isHovered, setIsHovered] = useState(false);
@@ -665,10 +703,8 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
             transition={{ duration: 0.4, ease: EASE_OUT }}
             className={`w-full md:w-4/5 p-8 rounded-2xl bg-background border border-foreground/5 transition-colors duration-300 relative group ${isEven ? 'md:ml-12' : 'md:mr-12'}`}
           >
-            {/* Connector Line */}
             <div className={`absolute top-1/2 w-12 h-px bg-accent/30 hidden md:block ${isEven ? '-left-12' : '-right-12'}`} />
             
-            {/* Timeline Dot with State */}
             <motion.div
               animate={{
                 scale: isFirst || isInView ? 1.4 : 1,
@@ -700,7 +736,6 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
 }
 
 // --- Projects Section ---
-
 function ProjectsSection({ projects }: { projects: Projects[] }) {
   return (
     <section id="projects" className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto">
@@ -730,7 +765,7 @@ function ProjectsSection({ projects }: { projects: Projects[] }) {
   );
 }
 
-// Project Card with Reveal Interaction - CHANGE 3: Hide live demo link on mobile
+// Project Card with Reveal Interaction
 function ProjectCard({ project, index }: { project: Projects; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -762,7 +797,6 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
               {project.projectDescription}
             </p>
 
-            {/* Reveal on Hover - Architecture/Decisions */}
             <motion.div
               animate={{ opacity: isHovered ? 1 : 0, height: isHovered ? 'auto' : 0 }}
               transition={{ duration: 0.3, ease: EASE_OUT }}
@@ -833,7 +867,6 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
 }
 
 // --- Contact Section ---
-
 function ContactSection() {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [activeField, setActiveField] = useState<string | null>(null);
@@ -878,7 +911,6 @@ function ContactSection() {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
-            {/* Name & Email */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <div className="relative">
                 <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
@@ -909,7 +941,6 @@ function ContactSection() {
               </div>
             </div>
 
-            {/* Subject Selection */}
             <div>
               <label className="block text-sm font-medium text-foreground/70 mb-3">Subject</label>
               <div className="flex flex-wrap gap-2 md:gap-3">
@@ -930,7 +961,6 @@ function ContactSection() {
               </div>
             </div>
 
-            {/* Message */}
             <div className="relative">
               <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                 Message
@@ -947,7 +977,6 @@ function ContactSection() {
               <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
             </div>
 
-            {/* Submit */}
             <div className="flex justify-end pt-4">
               <button 
                 type="submit"
@@ -970,7 +999,6 @@ function ContactSection() {
 }
 
 // --- Footer ---
-
 function Footer() {
   return (
     <footer className="py-8 md:py-12 border-t border-foreground/5 bg-background">
