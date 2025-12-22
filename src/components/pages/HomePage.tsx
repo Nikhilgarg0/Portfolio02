@@ -798,21 +798,35 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
             </p>
 
             <motion.div
-              animate={{ opacity: isHovered ? 1 : 0, height: isHovered ? 'auto' : 0 }}
-              transition={{ duration: 0.3, ease: EASE_OUT }}
+              animate={{ 
+                opacity: isHovered ? 1 : 0, 
+                height: isHovered ? 'auto' : 0,
+                marginTop: isHovered ? 16 : 0
+              }}
+              transition={{ duration: 0.4, ease: EASE_OUT }}
               className="overflow-hidden"
             >
               {project.architectureDetails && (
-                <div className="mt-4 p-4 bg-foreground/5 border border-foreground/10 rounded-lg">
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : -10 }}
+                  transition={{ duration: 0.4, ease: EASE_OUT, delay: 0.05 }}
+                  className="p-4 bg-foreground/5 border border-foreground/10 rounded-lg"
+                >
                   <p className="text-xs font-mono text-accent/70 uppercase tracking-wider mb-2">Architecture</p>
                   <p className="text-sm text-foreground/60">{project.architectureDetails}</p>
-                </div>
+                </motion.div>
               )}
               {project.designDecisions && (
-                <div className="mt-3 p-4 bg-foreground/5 border border-foreground/10 rounded-lg">
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : -10 }}
+                  transition={{ duration: 0.4, ease: EASE_OUT, delay: 0.1 }}
+                  className="mt-3 p-4 bg-foreground/5 border border-foreground/10 rounded-lg"
+                >
                   <p className="text-xs font-mono text-accent/70 uppercase tracking-wider mb-2">Design Decisions</p>
                   <p className="text-sm text-foreground/60">{project.designDecisions}</p>
-                </div>
+                </motion.div>
               )}
             </motion.div>
 
@@ -912,31 +926,47 @@ function ContactSection() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-              <div className="relative">
-                <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
+              <div className="relative pt-6">
+                <motion.label 
+                  animate={{
+                    y: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? -28 : 0,
+                    fontSize: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '0.75rem' : '0.875rem',
+                    color: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '#007BFF' : '#999999'
+                  }}
+                  transition={{ duration: 0.2, ease: EASE_OUT }}
+                  className="absolute left-4 block pointer-events-none"
+                >
                   Name
-                </label>
+                </motion.label>
                 <input 
                   id="name"
-                  placeholder="Your name"
+                  placeholder=""
                   required
                   onFocus={() => setActiveField('name')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 text-sm md:text-base"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base"
                 />
               </div>
-              <div className="relative">
-                <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
+              <div className="relative pt-6">
+                <motion.label 
+                  animate={{
+                    y: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? -28 : 0,
+                    fontSize: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '0.75rem' : '0.875rem',
+                    color: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '#007BFF' : '#999999'
+                  }}
+                  transition={{ duration: 0.2, ease: EASE_OUT }}
+                  className="absolute left-4 block pointer-events-none"
+                >
                   Email
-                </label>
+                </motion.label>
                 <input 
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder=""
                   required
                   onFocus={() => setActiveField('email')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 text-sm md:text-base"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base"
                 />
               </div>
             </div>
@@ -945,34 +975,46 @@ function ContactSection() {
               <label className="block text-sm font-medium text-foreground/70 mb-3">Subject</label>
               <div className="flex flex-wrap gap-2 md:gap-3">
                 {subjects.map((subject) => (
-                  <button
+                  <motion.button
                     key={subject}
                     type="button"
                     onClick={() => setSelectedSubject(subject)}
-                    className={`px-4 py-2 rounded-lg border transition-all duration-300 text-xs md:text-sm font-medium ${
-                      selectedSubject === subject
-                        ? 'border-accent bg-accent/10 text-accent'
-                        : 'border-foreground/20 text-foreground/60 hover:border-foreground/40'
-                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    animate={{
+                      borderColor: selectedSubject === subject ? '#007BFF' : '#333333',
+                      backgroundColor: selectedSubject === subject ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
+                      color: selectedSubject === subject ? '#007BFF' : '#999999'
+                    }}
+                    transition={{ duration: 0.2, ease: EASE_OUT }}
+                    className={`px-4 py-2 rounded-lg border text-xs md:text-sm font-medium`}
                   >
                     {subject}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
 
-            <div className="relative">
-              <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
+            <div className="relative pt-6">
+              <motion.label 
+                animate={{
+                  y: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? -28 : 0,
+                  fontSize: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '0.75rem' : '0.875rem',
+                  color: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '#007BFF' : '#999999'
+                }}
+                transition={{ duration: 0.2, ease: EASE_OUT }}
+                className="absolute left-4 block pointer-events-none"
+              >
                 Message
-              </label>
+              </motion.label>
               <textarea 
                 id="message"
-                placeholder="What's this about?"
+                placeholder=""
                 required
                 rows={5}
                 onFocus={() => setActiveField('message')}
                 onBlur={() => setActiveField(null)}
-                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none placeholder:text-foreground/30 text-sm md:text-base"
+                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none text-sm md:text-base"
               />
               <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
             </div>
