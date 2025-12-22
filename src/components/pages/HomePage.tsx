@@ -191,7 +191,7 @@ function Header({ activeSection }: { activeSection: string }) {
       <nav className="max-w-[120rem] mx-auto px-6 md:px-12 flex justify-between items-center">
         <Link to="/" className="font-heading text-xl font-bold tracking-tighter flex items-center gap-2 group">
           <span className="w-8 h-8 bg-foreground text-background flex items-center justify-center rounded-sm font-mono text-sm group-hover:bg-accent transition-colors duration-300">
-            NIKHIL
+            DEV
           </span>
           <span className="hidden sm:inline-block">Portfolio</span>
         </Link>
@@ -251,8 +251,8 @@ function HeroSection() {
         </div>
 
         <h1 className="font-heading text-3xl md:text-6xl lg:text-7xl tracking-tight mb-6 md:mb-8 leading-[1.2] text-center">
-          Building what's <br />
-          <span className="text-accent">next</span>
+          NIKHIL <br />
+          <span className="text-accent">GARG</span>
         </h1>
 
         <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2">
