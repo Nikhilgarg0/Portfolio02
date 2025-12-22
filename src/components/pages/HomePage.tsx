@@ -191,7 +191,7 @@ function Header({ activeSection }: { activeSection: string }) {
       <nav className="max-w-[120rem] mx-auto px-6 md:px-12 flex justify-between items-center">
         <Link to="/" className="font-heading text-xl font-bold tracking-tighter flex items-center gap-2 group">
           <span className="w-8 h-8 bg-foreground text-background flex items-center justify-center rounded-sm font-mono text-sm group-hover:bg-accent transition-colors duration-300">
-            NIKHIL's
+            NIKHIL
           </span>
           <span className="hidden sm:inline-block">Portfolio</span>
         </Link>
