@@ -282,7 +282,7 @@ function HeroSection() {
         <div className="flex justify-center gap-4 md:gap-6">
           <SocialLink href="https://github.com/Nikhilgarg0/" icon={<Github size={20} />} label="GitHub" />
           <SocialLink href="https://www.linkedin.com/in/nikhil-garg8982/" icon={<Linkedin size={20} />} label="LinkedIn" />
-          <SocialLink href="#official.nikhilgarg@gmail.com" icon={<Mail size={20} />} label="Email" />
+          <SocialLink href="official.nikhilgarg@gmail.com" icon={<Mail size={20} />} label="Email" />
         </div>
       </motion.div>
 
