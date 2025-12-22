@@ -179,16 +179,16 @@ function Header({ activeSection }: { activeSection: string }) {
 function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const codeOpacity = useTransform(scrollY, [0, 200], [1, 0.6]);
+  const y1 = useTransform(scrollY, [0, 800], [0, 200]);
+  const opacity = useTransform(scrollY, [0, 600], [1, 0]);
+  const codeOpacity = useTransform(scrollY, [0, 400], [1, 0.6]);
 
   return (
-    <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-32 pb-24 px-6 md:px-12">
+    <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-20 md:pt-32 pb-16 md:pb-24 px-4 md:px-12">
       {/* Background Grid */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
+        <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[200px] w-[200px] md:h-[310px] md:w-[310px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
       </div>
 
       <motion.div 
@@ -196,25 +196,25 @@ function HeroSection() {
         className="z-10 w-full max-w-5xl"
       >
         {/* Availability Badge */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-8 md:mb-12">
           <AvailabilityBadge />
         </div>
 
         {/* Headline */}
-        <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl tracking-tight mb-8 leading-[1.2] text-center">
+        <h1 className="font-heading text-3xl md:text-6xl lg:text-7xl tracking-tight mb-6 md:mb-8 leading-[1.2] text-center">
           Building what's <br />
           <span className="text-accent">next</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-center text-lg md:text-xl text-foreground/70 mb-16 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2">
           Early-stage developer focused on web and mobile applications. Graduating 2026. Learning in public, building with intent.
         </p>
 
         {/* Code Snippet with Soft Hover Glow */}
         <motion.div 
           style={{ opacity: codeOpacity }}
-          className="mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-6 md:p-8 font-mono text-sm overflow-x-auto group hover:border-accent/30 hover:bg-foreground/[0.08] transition-all duration-500"
+          className="mb-12 md:mb-16 bg-foreground/5 border border-foreground/10 rounded-lg p-4 md:p-8 font-mono text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-foreground/[0.08] transition-all duration-500"
         >
           {/* Soft glow on hover */}
           <div className="absolute inset-0 rounded-lg bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10" />
@@ -225,18 +225,19 @@ function HeroSection() {
             <div className="w-3 h-3 rounded-full bg-green-500/60" />
           </div>
           <CodeSnippet />
+          <p className="text-xs text-foreground/40 mt-4 text-center">Click to expand</p>
         </motion.div>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center mb-10 md:mb-12">
           <ProjectsCTA />
-          <a href="#contact" className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium">
+          <a href="#contact" className="px-6 py-3 border border-foreground/20 rounded-lg text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium text-sm md:text-base">
             Get in Touch
           </a>
         </div>
 
         {/* Social Links */}
-        <div className="flex justify-center gap-6">
+        <div className="flex justify-center gap-4 md:gap-6">
           <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
           <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
           <SocialLink href="#contact" icon={<Mail size={20} />} label="Email" />
@@ -245,7 +246,7 @@ function HeroSection() {
 
       <motion.div 
         style={{ opacity }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce text-foreground/40"
+        className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 animate-bounce text-foreground/40"
       >
         <ChevronDown size={24} />
       </motion.div>
@@ -253,17 +254,73 @@ function HeroSection() {
   );
 }
 
-// Code Snippet Component
+// Code Snippet Component with Expandable Modal
 function CodeSnippet() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className="space-y-2 text-foreground/80">
-      <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
-      <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
-      <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
-      <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
-      <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
-      <div>{'}'};</div>
-    </div>
+    <>
+      <motion.div
+        layoutId="codeSnippet"
+        onClick={() => setIsExpanded(true)}
+        className="cursor-pointer"
+      >
+        <div className="space-y-2 text-foreground/80">
+          <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
+          <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
+          <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
+          <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
+          <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
+          <div>{'}'};</div>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsExpanded(false)}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              layoutId="codeSnippet"
+              onClick={(e) => e.stopPropagation()}
+              className="bg-foreground/5 border border-foreground/10 rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-auto"
+            >
+              <div className="flex justify-between items-start mb-6">
+                <h3 className="font-heading text-2xl font-bold">Developer Profile</h3>
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="text-foreground/60 hover:text-foreground transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-2 text-foreground/80 font-mono text-sm md:text-base mb-6">
+                <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
+                <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
+                <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
+                <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
+                <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
+                <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"React"</span>, <span className="text-green-400">"TypeScript"</span>, <span className="text-green-400">"Node.js"</span>],</div>
+                <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">3</span> <span className="text-foreground/60">years,</span></div>
+                <div className="ml-4"><span className="text-foreground/60">openToWork:</span> <span className="text-blue-400">true</span></div>
+                <div>{'}'};</div>
+              </div>
+
+              <p className="text-foreground/70 text-sm">
+                Click anywhere outside to close this expanded view. This modal demonstrates the iOS Dynamic Island-inspired interaction pattern.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -383,13 +440,13 @@ function AboutSection() {
   const imageY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
-    <section id="about" className="py-32 px-6 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+    <section id="about" className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-start">
         {/* Image Column with Parallax */}
         <div className="lg:col-span-4">
           <AnimatedElement>
-            <h2 className="font-heading text-4xl font-bold mb-8 flex items-center gap-4">
-              <span className="w-12 h-[1px] bg-accent"></span>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 md:mb-8 flex items-center gap-4">
+              <span className="w-8 md:w-12 h-[1px] bg-accent"></span>
               About
             </h2>
             <ImageWithParallax imageY={imageY} />
@@ -399,7 +456,7 @@ function AboutSection() {
         {/* Content Column */}
         <div className="lg:col-span-8 flex flex-col justify-start">
           <AnimatedElement delay={200}>
-            <p className="font-heading text-2xl md:text-3xl leading-relaxed text-foreground/90 mb-16">
+            <p className="font-heading text-xl md:text-3xl leading-relaxed text-foreground/90 mb-12 md:mb-16">
               I design systems that scale. Every decision prioritizes <span className="text-accent">readability, maintainability, and performance</span> over expedience.
             </p>
           </AnimatedElement>
@@ -563,17 +620,17 @@ function StackSection() {
 
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
-    <section id="experience" className="py-32 bg-foreground/[0.02] border-y border-foreground/5">
-      <div className="max-w-[100rem] mx-auto px-6 md:px-12">
+    <section id="experience" className="py-20 md:py-32 bg-foreground/[0.02] border-y border-foreground/5">
+      <div className="max-w-[100rem] mx-auto px-4 md:px-12">
         <AnimatedElement>
-          <h2 className="font-heading text-4xl font-bold mb-20 text-center">Experience Journey</h2>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-16 md:mb-20 text-center">Experience Journey</h2>
         </AnimatedElement>
 
         <div className="relative">
           {/* Central Timeline */}
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-foreground/10 -translate-x-1/2 hidden md:block" />
 
-          <div className="space-y-24">
+          <div className="space-y-16 md:space-y-24">
             {experiences.map((exp, index) => (
               <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
             ))}
@@ -646,25 +703,25 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
 
 function ProjectsSection({ projects }: { projects: Projects[] }) {
   return (
-    <section id="projects" className="py-32 px-6 md:px-12 max-w-[120rem] mx-auto">
+    <section id="projects" className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto">
       <AnimatedElement>
-        <div className="flex flex-col md:flex-row justify-between items-end mb-24 border-b border-foreground/10 pb-8">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-b border-foreground/10 pb-6 md:pb-8 gap-4">
           <div>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4">Selected Works</h2>
-            <p className="text-foreground/60 max-w-md">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold mb-3 md:mb-4">Selected Works</h2>
+            <p className="text-foreground/60 max-w-md text-sm md:text-base">
               A collection of experiments, applications, and technical explorations.
             </p>
           </div>
           <Link 
             to="/projects" 
-            className="group flex items-center gap-2 text-accent hover:text-accent/80 transition-colors mt-6 md:mt-0"
+            className="group flex items-center gap-2 text-accent hover:text-accent/80 transition-colors whitespace-nowrap text-sm md:text-base"
           >
-            View All Projects <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            View All Projects <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
           </Link>
         </div>
       </AnimatedElement>
 
-      <div className="space-y-32">
+      <div className="space-y-20 md:space-y-32">
         {projects.map((project, index) => (
           <ProjectCard key={project._id} project={project} index={index} />
         ))}
@@ -687,21 +744,21 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div ref={ref} className="group relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[60vh]">
+    <div ref={ref} className="group relative grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-center min-h-auto md:min-h-[60vh]">
       <div className={`order-2 ${index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
         <AnimatedElement>
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-accent text-sm">0{index + 1}</span>
-              <div className="h-px w-12 bg-accent/30" />
-              <span className="font-mono text-foreground/40 text-sm uppercase tracking-wider">{project.projectType || 'Development'}</span>
+          <div className="space-y-4 md:space-y-6">
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="font-mono text-accent text-xs md:text-sm">0{index + 1}</span>
+              <div className="h-px w-8 md:w-12 bg-accent/30" />
+              <span className="font-mono text-foreground/40 text-xs md:text-sm uppercase tracking-wider">{project.projectType || 'Development'}</span>
             </div>
             
-            <h3 className="font-heading text-4xl md:text-5xl font-bold group-hover:text-accent transition-colors duration-300">
+            <h3 className="font-heading text-2xl md:text-5xl font-bold group-hover:text-accent transition-colors duration-300">
               {project.projectName}
             </h3>
             
-            <p className="text-lg text-foreground/70 leading-relaxed max-w-xl">
+            <p className="text-base md:text-lg text-foreground/70 leading-relaxed max-w-xl">
               {project.projectDescription}
             </p>
 
@@ -725,7 +782,7 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
               )}
             </motion.div>
 
-            <div className="flex flex-wrap gap-3 pt-4">
+            <div className="flex flex-wrap gap-2 md:gap-3 pt-4">
               {project.techStack?.split(',').map((tech) => (
                 <span key={tech} className="px-3 py-1 text-xs border border-foreground/10 rounded-md text-foreground/60">
                   {tech.trim()}
@@ -733,14 +790,14 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
               ))}
             </div>
 
-            <div className="flex gap-6 pt-8">
+            <div className="flex gap-4 md:gap-6 pt-6 md:pt-8 flex-wrap">
               {project.githubLink && (
-                <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium hover:text-accent transition-colors">
+                <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs md:text-sm font-medium hover:text-accent transition-colors">
                   <Github size={18} /> Source Code
                 </a>
               )}
               {project.liveLink && (
-                <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="hidden md:flex items-center gap-2 text-sm font-medium hover:text-accent transition-colors">
+                <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="hidden md:flex items-center gap-2 text-xs md:text-sm font-medium hover:text-accent transition-colors">
                   <ExternalLink size={18} /> Live Demo
                 </a>
               )}
@@ -791,12 +848,12 @@ function ContactSection() {
   const subjects = ['Hiring', 'Collaboration', 'Feedback', 'Other'];
 
   return (
-    <section id="contact" className="py-32 px-6 md:px-12 max-w-5xl mx-auto">
+    <section id="contact" className="py-20 md:py-32 px-4 md:px-12 max-w-5xl mx-auto">
       <AnimatedElement>
-        <div className="mb-16">
-          <span className="text-accent font-mono text-sm uppercase tracking-wider">Contact</span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold mt-4 mb-6">Get in touch</h2>
-          <p className="text-foreground/60 text-lg">
+        <div className="mb-12 md:mb-16">
+          <span className="text-accent font-mono text-xs md:text-sm uppercase tracking-wider">Contact</span>
+          <h2 className="font-heading text-3xl md:text-5xl font-bold mt-3 md:mt-4 mb-4 md:mb-6">Get in touch</h2>
+          <p className="text-foreground/60 text-base md:text-lg">
             Have a question or want to work together? Send me a message.
           </p>
         </div>
@@ -805,13 +862,13 @@ function ContactSection() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-accent/10 border border-accent/20 rounded-2xl p-12 text-center"
+            className="bg-accent/10 border border-accent/20 rounded-2xl p-8 md:p-12 text-center"
           >
             <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
               <Mail className="text-white" size={32} />
             </div>
-            <h3 className="font-heading text-2xl font-bold mb-2">Message Sent</h3>
-            <p className="text-foreground/70">I'll get back to you as soon as possible.</p>
+            <h3 className="font-heading text-xl md:text-2xl font-bold mb-2">Message Sent</h3>
+            <p className="text-foreground/70 text-sm md:text-base">I'll get back to you as soon as possible.</p>
             <button 
               onClick={() => setFormState('idle')}
               className="mt-8 text-sm text-accent hover:underline"
@@ -820,9 +877,9 @@ function ContactSection() {
             </button>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
             {/* Name & Email */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <div className="relative">
                 <label className={`absolute left-0 transition-all duration-300 text-sm ${activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '-top-6 text-xs text-accent' : 'top-3 text-foreground/50'}`}>
                   Name
@@ -833,7 +890,7 @@ function ContactSection() {
                   required
                   onFocus={() => setActiveField('name')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 text-sm md:text-base"
                 />
               </div>
               <div className="relative">
@@ -847,7 +904,7 @@ function ContactSection() {
                   required
                   onFocus={() => setActiveField('email')}
                   onBlur={() => setActiveField(null)}
-                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30"
+                  className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors placeholder:text-foreground/30 text-sm md:text-base"
                 />
               </div>
             </div>
@@ -855,13 +912,13 @@ function ContactSection() {
             {/* Subject Selection */}
             <div>
               <label className="block text-sm font-medium text-foreground/70 mb-3">Subject</label>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 {subjects.map((subject) => (
                   <button
                     key={subject}
                     type="button"
                     onClick={() => setSelectedSubject(subject)}
-                    className={`px-4 py-2 rounded-lg border transition-all duration-300 text-sm font-medium ${
+                    className={`px-4 py-2 rounded-lg border transition-all duration-300 text-xs md:text-sm font-medium ${
                       selectedSubject === subject
                         ? 'border-accent bg-accent/10 text-accent'
                         : 'border-foreground/20 text-foreground/60 hover:border-foreground/40'
@@ -885,7 +942,7 @@ function ContactSection() {
                 rows={5}
                 onFocus={() => setActiveField('message')}
                 onBlur={() => setActiveField(null)}
-                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none placeholder:text-foreground/30"
+                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none placeholder:text-foreground/30 text-sm md:text-base"
               />
               <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
             </div>
@@ -895,7 +952,7 @@ function ContactSection() {
               <button 
                 type="submit"
                 disabled={formState === 'submitting'}
-                className="px-8 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 md:px-8 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base"
               >
                 <Mail size={18} />
                 {formState === 'submitting' ? 'Sending...' : 'Send Message'}
@@ -916,17 +973,17 @@ function ContactSection() {
 
 function Footer() {
   return (
-    <footer className="py-12 border-t border-foreground/5 bg-background">
-      <div className="max-w-[120rem] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer className="py-8 md:py-12 border-t border-foreground/5 bg-background">
+      <div className="max-w-[120rem] mx-auto px-4 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
         <div className="text-center md:text-left">
           <p className="font-heading font-bold text-lg mb-1">DEV Portfolio</p>
-          <p className="text-sm text-foreground/40">© 2026. Built with precision.</p>
+          <p className="text-xs md:text-sm text-foreground/40">© 2026. Built with precision.</p>
         </div>
         
-        <div className="flex gap-8">
-          <a href="https://github.com" className="text-foreground/40 hover:text-accent transition-colors text-sm">GitHub</a>
-          <a href="https://linkedin.com" className="text-foreground/40 hover:text-accent transition-colors text-sm">LinkedIn</a>
-          <a href="mailto:hello@example.com" className="text-foreground/40 hover:text-accent transition-colors text-sm">Email</a>
+        <div className="flex gap-6 md:gap-8">
+          <a href="https://github.com" className="text-foreground/40 hover:text-accent transition-colors text-xs md:text-sm">GitHub</a>
+          <a href="https://linkedin.com" className="text-foreground/40 hover:text-accent transition-colors text-xs md:text-sm">LinkedIn</a>
+          <a href="mailto:hello@example.com" className="text-foreground/40 hover:text-accent transition-colors text-xs md:text-sm">Email</a>
         </div>
       </div>
     </footer>
