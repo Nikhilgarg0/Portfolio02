@@ -88,25 +88,25 @@ export default function ResumePage() {
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Mail size={18} />
-                    developer@example.com
+                    nikhilcodes.in@nikhilcodes.in
                   </a>
                   <a 
-                    href="https://github.com"
+                    href="https://github.com/Nikhilgarg0/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Github size={18} />
-                    github.com/developer
+                    github.com/Nikhilgarg0
                   </a>
                   <a 
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/nikhil-garg8982/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Linkedin size={18} />
-                    linkedin.com/in/developer
+                    linkedin.com/in/nikhil-garg8982
                   </a>
                 </div>
               </section>

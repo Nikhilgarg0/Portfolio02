@@ -219,7 +219,7 @@ function Header({ activeSection }: { activeSection: string }) {
             className="px-5 py-2 border border-foreground/20 rounded-full text-sm hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2 group"
           >
             CV
-            <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
+            <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform opacity-[0.56] shadow-[12px_12px_4px_0px_#d9d9d9]" />
           </Link>
         </div>
       </nav>
