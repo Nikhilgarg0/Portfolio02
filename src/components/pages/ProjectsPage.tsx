@@ -14,41 +14,9 @@ export default function ProjectsPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       const { items } = await BaseCrudService.getAll<Projects>('projects');
-      
-      // Hardcode project details
-      const hardcodedProjects: Projects[] = items.map(project => {
-        if (project.projectName?.toLowerCase().includes('website')) {
-          return {
-            ...project,
-            projectName: 'Portfolio Website',
-            projectDescription: 'Coming Soon',
-            projectType: 'Web',
-            githubLink: undefined,
-            liveLink: undefined,
-            mainScreenshot: undefined,
-            techStack: undefined,
-            architectureDetails: undefined,
-            designDecisions: undefined,
-          };
-        } else if (project.projectName?.toLowerCase().includes('app') || project.projectName?.toLowerCase().includes('asizto')) {
-          return {
-            ...project,
-            projectName: 'ASIZTO : An AI powered Health Assistant Mobile App',
-            projectDescription: 'Developed a cross-platform health management app featuring secure user authentication, medication reminders with adherence tracking by 35% through notification tracking system, appointment scheduling, and emergency contact management. Integrated AI-driven health insights and medicine information retrieval via Google Gemini API, enhancing personalized user experience. Delivered an intuitive, real-time synchronized mobile app optimized for Android.',
-            projectType: 'Mobile App',
-            techStack: 'React Native, Kotlin, Expo framework, Firestore authentication, Firebase Database',
-            architectureDetails: 'Cross-platform architecture using React Native with Kotlin for Android-specific optimizations. Firestore for real-time data synchronization and Firebase Authentication for secure user management.',
-            designDecisions: 'Prioritized user experience with intuitive medication reminder system, real-time appointment notifications, and AI-powered health insights integration via Google Gemini API.',
-            githubLink: 'https://github.com/asizto',
-            liveLink: undefined,
-          };
-        }
-        return project;
-      });
-
-      setProjects(hardcodedProjects);
-      if (hardcodedProjects.length > 0) {
-        setSelectedProject(hardcodedProjects[0]);
+      setProjects(items);
+      if (items.length > 0) {
+        setSelectedProject(items[0]);
       }
     };
     
