@@ -46,7 +46,6 @@ export default function ResumePage() {
           </div>
         </nav>
       </header>
-
       <div className="pt-32 pb-16 px-8">
         <div className="max-w-[100rem] mx-auto">
           {/* Header Section */}
@@ -130,9 +129,22 @@ export default function ResumePage() {
                   </div>
                   
                   <div>
+                    <h3 className="font-heading text-lg font-semibold mb-3">Tools & Platforms</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {['Git', 'MongoDB', 'Figma'].map((skill) => (
+                        <span 
+                          key={skill}
+                          className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                <div>
                     <h3 className="font-heading text-lg font-semibold mb-3">Frameworks & Libraries</h3>
                     <div className="flex flex-wrap gap-2">
-                      {['React', 'Node.js', 'Express', 'Tailwind CSS'].map((skill) => (
+                      {['React', 'Node.js', 'Express', 'Tailwind CSS', 'Expo'].map((skill) => (
                         <span 
                           key={skill}
                           className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
@@ -143,20 +155,7 @@ export default function ResumePage() {
                     </div>
                   </div>
                   
-                  <div>
-                    <h3 className="font-heading text-lg font-semibold mb-3">Tools & Platforms</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {['Git', 'PostgreSQL', 'MongoDB', 'Figma'].map((skill) => (
-                        <span 
-                          key={skill}
-                          className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
                   </div>
-                </div>
               </section>
 
               {/* Core Competencies */}
@@ -268,7 +267,6 @@ export default function ResumePage() {
           </div>
         </div>
       </div>
-
       {/* Footer */}
       <footer className="py-12 px-8 border-t border-foreground/10">
         <div className="max-w-[100rem] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
@@ -295,7 +293,6 @@ export default function ResumePage() {
           </div>
         </div>
       </footer>
-
       {/* Print Styles */}
       <style>{`
         @media print {
