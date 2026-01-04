@@ -657,6 +657,11 @@ function StackSection() {
 
 // --- Experience Section ---
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
+  // Filter to show only Software Engineering Intern
+  const filteredExperiences = experiences.filter(exp => 
+    exp.title?.toLowerCase().includes('software engineering intern')
+  );
+
   return (
     <section id="experience" className="py-20 md:py-32 bg-foreground/[0.02] border-y border-foreground/5">
       <div className="max-w-[100rem] mx-auto px-4 md:px-12">
@@ -668,7 +673,7 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-foreground/10 -translate-x-1/2 hidden md:block" />
 
           <div className="space-y-16 md:space-y-24">
-            {experiences.map((exp, index) => (
+            {filteredExperiences.map((exp, index) => (
               <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
             ))}
           </div>
