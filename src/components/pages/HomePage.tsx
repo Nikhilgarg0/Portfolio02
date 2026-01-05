@@ -531,7 +531,7 @@ function ImageWithParallax({ imageY }: { imageY: any }) {
         className="w-full h-full"
       >
         <Image 
-          src="https://i.ibb.co/vvvY5gMV/Chat-GPT-Image-Jan-5-2026-11-59-31-AM.png?originHeight=960" 
+          src="https://ibb.co/gMhPW3x3" 
           alt="Developer working"
           className="w-full h-full object-cover opacity-75"
         />
