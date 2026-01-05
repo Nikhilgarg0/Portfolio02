@@ -132,7 +132,7 @@ export default function ResumePage() {
                   <div>
                     <h3 className="font-heading text-lg font-semibold mb-3">Frameworks & Libraries</h3>
                     <div className="flex flex-wrap gap-2">
-                      {['React', 'Node.js', 'Express', 'Tailwind CSS'].map((skill) => (
+                      {['React', 'Node.js', 'Express', 'Tailwind CSS', 'Expo'].map((skill) => (
                         <span 
                           key={skill}
                           className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
@@ -146,7 +146,7 @@ export default function ResumePage() {
                   <div>
                     <h3 className="font-heading text-lg font-semibold mb-3">Tools & Platforms</h3>
                     <div className="flex flex-wrap gap-2">
-                      {['Git', 'PostgreSQL', 'MongoDB', 'Figma'].map((skill) => (
+                      {['Git', 'MongoDB', 'Figma'].map((skill) => (
                         <span 
                           key={skill}
                           className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
