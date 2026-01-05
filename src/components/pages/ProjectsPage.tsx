@@ -1,41 +1,27 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { ArrowLeft, Github, ExternalLink, ChevronDown, ChevronUp, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Github, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { BaseCrudService } from '@/integrations';
 import { Projects } from '@/entities';
-
-// Hardcoded projects data
-const HARDCODED_PROJECTS: Projects[] = [
-  {
-    _id: 'website-project',
-    projectName: 'Website',
-    projectDescription: 'Personal portfolio website coming soon',
-    projectType: 'Web',
-    techStack: '',
-    architectureDetails: '',
-    designDecisions: '',
-    githubLink: '',
-    liveLink: '',
-    mainScreenshot: '',
-  },
-  {
-    _id: 'asizto-mobile',
-    projectName: 'ASIZTO',
-    projectDescription: 'An AI powered Health Assistant Mobile App',
-    projectType: 'Mobile',
-    techStack: 'React Native, Kotlin, Expo framework, Firestore, Firebase Database',
-    architectureDetails: 'Developed a cross-platform health management app featuring secure user authentication, medication reminders with adherence tracking by 35% through notification tracking system, appointment scheduling, and emergency contact management. Integrated AI-driven health insights and medicine information retrieval via Google Gemini API, enhancing personalized user experience. Delivered an intuitive, real-time synchronized mobile app optimized for Android.',
-    designDecisions: 'Built with React Native and Expo framework for cross-platform compatibility. Utilized Firestore for secure authentication and Firebase Database for real-time data synchronization. Integrated Google Gemini API for AI-powered health insights and medicine information retrieval.',
-    githubLink: 'https://github.com',
-    liveLink: '',
-    mainScreenshot: '',
-  },
-];
+import { Image } from '@/components/ui/image';
 
 export default function ProjectsPage() {
-  const [projects] = useState<Projects[]>(HARDCODED_PROJECTS);
-  const [selectedProject, setSelectedProject] = useState<Projects | null>(HARDCODED_PROJECTS[1]);
+  const [projects, setProjects] = useState<Projects[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { items } = await BaseCrudService.getAll<Projects>('projects');
+      setProjects(items);
+      if (items.length > 0) {
+        setSelectedProject(items[0]);
+      }
+    };
+    
+    fetchProjects();
+  }, []);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -128,107 +114,94 @@ export default function ProjectsPage() {
                     transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                     className="space-y-8"
                   >
-                    {/* Coming Soon Banner for Website Project */}
-                    {selectedProject._id === 'website-project' && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                        className="flex flex-col items-center justify-center py-24 px-8 border border-accent/30 rounded-lg bg-accent/5"
-                      >
-                        <Clock size={48} className="text-accent mb-4" />
-                        <h2 className="font-heading text-4xl font-bold mb-2 text-center">Coming Soon</h2>
-                        <p className="font-paragraph text-lg text-foreground/70 text-center max-w-md">
-                          This project is currently in development. Check back soon for updates!
-                        </p>
-                      </motion.div>
+                    {/* Project Header */}
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <h2 className="font-heading text-4xl font-bold">
+                          {selectedProject.projectName}
+                        </h2>
+                        <div className="flex gap-3">
+                          {selectedProject.githubLink && (
+                            <a
+                              href={selectedProject.githubLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-3 bg-foreground/5 border border-foreground/10 rounded-lg hover:border-accent transition-colors duration-300"
+                              aria-label="View on GitHub"
+                            >
+                              <Github size={20} />
+                            </a>
+                          )}
+                          {selectedProject.liveLink && (
+                            <a
+                              href={selectedProject.liveLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-3 bg-accent text-primary-foreground rounded-lg hover:bg-accent/90 transition-colors duration-300"
+                              aria-label="View live project"
+                            >
+                              <ExternalLink size={20} />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                      <p className="font-paragraph text-lg text-foreground/80 leading-relaxed">
+                        {selectedProject.projectDescription}
+                      </p>
+                    </div>
+
+                    {/* Screenshot */}
+                    {selectedProject.mainScreenshot && (
+                      <ProgressiveScreenshot 
+                        src={selectedProject.mainScreenshot}
+                        alt={`${selectedProject.projectName} screenshot`}
+                      />
                     )}
 
-                    {/* Project Details for Non-Coming Soon Projects */}
-                    {selectedProject._id !== 'website-project' && (
-                      <>
-                        {/* Project Header */}
-                        <div>
-                          <div className="flex justify-between items-start mb-4">
-                            <h2 className="font-heading text-4xl font-bold">
-                              {selectedProject.projectName}
-                            </h2>
-                            <div className="flex gap-3">
-                              {selectedProject.githubLink && (
-                                <a
-                                  href={selectedProject.githubLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="p-3 bg-foreground/5 border border-foreground/10 rounded-lg hover:border-accent transition-colors duration-300"
-                                  aria-label="View on GitHub"
-                                >
-                                  <Github size={20} />
-                                </a>
-                              )}
-                              {selectedProject.liveLink && (
-                                <a
-                                  href={selectedProject.liveLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="p-3 bg-accent text-primary-foreground rounded-lg hover:bg-accent/90 transition-colors duration-300"
-                                  aria-label="View live project"
-                                >
-                                  <ExternalLink size={20} />
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                          <p className="font-paragraph text-lg text-foreground/80 leading-relaxed">
-                            {selectedProject.projectDescription}
-                          </p>
+                    {/* Tech Stack - Expandable */}
+                    {selectedProject.techStack && (
+                      <ExpandableSection
+                        title="Tech Stack"
+                        isExpanded={expandedSections['tech']}
+                        onToggle={() => toggleSection('tech')}
+                      >
+                        <div className="flex flex-wrap gap-3">
+                          {selectedProject.techStack.split(',').map((tech, index) => (
+                            <span
+                              key={index}
+                              className="font-paragraph text-sm px-4 py-2 bg-foreground/5 border border-foreground/10 rounded-lg"
+                            >
+                              {tech.trim()}
+                            </span>
+                          ))}
                         </div>
+                      </ExpandableSection>
+                    )}
 
-                        {/* Tech Stack - Expandable */}
-                        {selectedProject.techStack && (
-                          <ExpandableSection
-                            title="Tech Stack"
-                            isExpanded={expandedSections['tech']}
-                            onToggle={() => toggleSection('tech')}
-                          >
-                            <div className="flex flex-wrap gap-3">
-                              {selectedProject.techStack.split(',').map((tech, index) => (
-                                <span
-                                  key={index}
-                                  className="font-paragraph text-sm px-4 py-2 bg-foreground/5 border border-foreground/10 rounded-lg"
-                                >
-                                  {tech.trim()}
-                                </span>
-                              ))}
-                            </div>
-                          </ExpandableSection>
-                        )}
+                    {/* Architecture - Expandable */}
+                    {selectedProject.architectureDetails && (
+                      <ExpandableSection
+                        title="Architecture"
+                        isExpanded={expandedSections['arch']}
+                        onToggle={() => toggleSection('arch')}
+                      >
+                        <p className="font-paragraph text-base text-foreground/80 leading-relaxed whitespace-pre-line">
+                          {selectedProject.architectureDetails}
+                        </p>
+                      </ExpandableSection>
+                    )}
 
-                        {/* Architecture - Expandable */}
-                        {selectedProject.architectureDetails && (
-                          <ExpandableSection
-                            title="Architecture"
-                            isExpanded={expandedSections['arch']}
-                            onToggle={() => toggleSection('arch')}
-                          >
-                            <p className="font-paragraph text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                              {selectedProject.architectureDetails}
-                            </p>
-                          </ExpandableSection>
-                        )}
-
-                        {/* Design Decisions - Expandable */}
-                        {selectedProject.designDecisions && (
-                          <ExpandableSection
-                            title="Design Decisions"
-                            isExpanded={expandedSections['design']}
-                            onToggle={() => toggleSection('design')}
-                          >
-                            <p className="font-paragraph text-base text-foreground/80 leading-relaxed whitespace-pre-line">
-                              {selectedProject.designDecisions}
-                            </p>
-                          </ExpandableSection>
-                        )}
-                      </>
+                    {/* Design Decisions - Expandable */}
+                    {selectedProject.designDecisions && (
+                      <ExpandableSection
+                        title="Design Decisions"
+                        isExpanded={expandedSections['design']}
+                        onToggle={() => toggleSection('design')}
+                      >
+                        <p className="font-paragraph text-base text-foreground/80 leading-relaxed whitespace-pre-line">
+                          {selectedProject.designDecisions}
+                        </p>
+                      </ExpandableSection>
                     )}
                   </motion.div>
                 )}
@@ -271,6 +244,49 @@ export default function ProjectsPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Progressive Screenshot Component
+function ProgressiveScreenshot({ src, alt }: { src: string; alt: string }) {
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  return (
+    <motion.div
+      className="relative overflow-hidden rounded-lg border border-foreground/10 bg-foreground/5 cursor-pointer group"
+      onClick={() => setIsRevealed(!isRevealed)}
+      whileHover={{ scale: 1.01 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      <div className="aspect-video relative">
+        <Image
+          src={src}
+          alt={alt}
+          width={1200}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Overlay that reveals on hover/click */}
+        <motion.div
+          initial={{ opacity: 0.6 }}
+          animate={{ opacity: isRevealed ? 0 : 0.6 }}
+          className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-transparent pointer-events-none"
+        />
+        
+        {/* Reveal instruction */}
+        {!isRevealed && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+            className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm"
+          >
+            <p className="font-paragraph text-base text-foreground">
+              Click to reveal full screenshot
+            </p>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 

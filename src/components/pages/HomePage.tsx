@@ -219,7 +219,7 @@ function Header({ activeSection }: { activeSection: string }) {
             className="px-5 py-2 border border-foreground/20 rounded-full text-sm hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2 group"
           >
             CV
-            <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform opacity-[0.56] shadow-[12px_12px_4px_0px_#d9d9d9]" />
+            <ChevronDown size={16} className="group-hover:translate-y-1 transition-transform" />
           </Link>
         </div>
       </nav>
@@ -251,8 +251,8 @@ function HeroSection() {
         </div>
 
         <h1 className="font-heading text-3xl md:text-6xl lg:text-7xl tracking-tight mb-6 md:mb-8 leading-[1.2] text-center">
-          NIKHIL GARG<br />
-          <span className="text-accent">; )</span>
+          Building what's <br />
+          <span className="text-accent">next</span>
         </h1>
 
         <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2">
@@ -280,8 +280,9 @@ function HeroSection() {
         </div>
 
         <div className="flex justify-center gap-4 md:gap-6">
-          <SocialLink href="https://github.com/Nikhilgarg0/" icon={<Github size={20} />} label="GitHub" />
-          <SocialLink href="https://www.linkedin.com/in/nikhil-garg8982/" icon={<Linkedin size={20} />} label="LinkedIn" />
+          <SocialLink href="https://github.com" icon={<Github size={20} />} label="GitHub" />
+          <SocialLink href="https://linkedin.com" icon={<Linkedin size={20} />} label="LinkedIn" />
+          <SocialLink href="#contact" icon={<Mail size={20} />} label="Email" />
         </div>
       </motion.div>
 
@@ -318,7 +319,7 @@ function CodeSnippet() {
       >
         <div className="space-y-2 text-foreground/80">
           <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
-          <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Nikhil"</span>,</div>
+          <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
           <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
           <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
           <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
@@ -357,18 +358,18 @@ function CodeSnippet() {
 
               <div className="space-y-2 text-foreground/80 font-mono text-sm md:text-base mb-6">
                 <div><span className="text-accent">const</span> <span className="text-foreground">developer</span> = {'{'}</div>
-                <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Nikhil"</span>,</div>
+                <div className="ml-4"><span className="text-foreground/60">name:</span> <span className="text-green-400">"Developer"</span>,</div>
                 <div className="ml-4"><span className="text-foreground/60">status:</span> <span className="text-green-400">"Available"</span>,</div>
                 <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
                 <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
-                <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"MERN"</span>, <span className="text-green-400">"Expo"</span>, <span className="text-green-400">"Android Studio"</span>],</div>
-                <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">1</span> <span className="text-foreground/60">years,</span></div>
+                <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"React"</span>, <span className="text-green-400">"TypeScript"</span>, <span className="text-green-400">"Node.js"</span>],</div>
+                <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">3</span> <span className="text-foreground/60">years,</span></div>
                 <div className="ml-4"><span className="text-foreground/60">openToWork:</span> <span className="text-blue-400">true</span></div>
                 <div>{'}'};</div>
               </div>
 
               <p className="text-foreground/70 text-sm">
-                Click anywhere outside to close this expanded view.
+                Click anywhere outside to close this expanded view. This modal demonstrates the iOS Dynamic Island-inspired interaction pattern.
               </p>
             </motion.div>
           </motion.div>
@@ -657,11 +658,6 @@ function StackSection() {
 
 // --- Experience Section ---
 function ExperienceSection({ experiences }: { experiences: Experience[] }) {
-  // Filter to show only Software Engineering Intern
-  const filteredExperiences = experiences.filter(exp => 
-    exp.title?.toLowerCase().includes('software engineering intern')
-  );
-
   return (
     <section id="experience" className="py-20 md:py-32 bg-foreground/[0.02] border-y border-foreground/5">
       <div className="max-w-[100rem] mx-auto px-4 md:px-12">
@@ -673,7 +669,7 @@ function ExperienceSection({ experiences }: { experiences: Experience[] }) {
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-foreground/10 -translate-x-1/2 hidden md:block" />
 
           <div className="space-y-16 md:space-y-24">
-            {filteredExperiences.map((exp, index) => (
+            {experiences.map((exp, index) => (
               <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
             ))}
           </div>
@@ -1050,7 +1046,7 @@ function Footer() {
     <footer className="py-8 md:py-12 border-t border-foreground/5 bg-background">
       <div className="max-w-[120rem] mx-auto px-4 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
         <div className="text-center md:text-left">
-          <p className="font-heading font-bold text-lg mb-1">Nikhils Portfolio</p>
+          <p className="font-heading font-bold text-lg mb-1">DEV Portfolio</p>
           <p className="text-xs md:text-sm text-foreground/40">© 2026. Built with precision.</p>
         </div>
         

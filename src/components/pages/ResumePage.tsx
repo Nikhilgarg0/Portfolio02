@@ -46,6 +46,7 @@ export default function ResumePage() {
           </div>
         </nav>
       </header>
+
       <div className="pt-32 pb-16 px-8">
         <div className="max-w-[100rem] mx-auto">
           {/* Header Section */}
@@ -87,25 +88,25 @@ export default function ResumePage() {
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Mail size={18} />
-                    nikhilcodes.in@nikhilcodes.in
+                    developer@example.com
                   </a>
                   <a 
-                    href="https://github.com/Nikhilgarg0/"
+                    href="https://github.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Github size={18} />
-                    github.com/Nikhilgarg0
+                    github.com/developer
                   </a>
                   <a 
-                    href="https://www.linkedin.com/in/nikhil-garg8982/"
+                    href="https://linkedin.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 font-paragraph text-base text-foreground/80 hover:text-accent transition-colors duration-300"
                   >
                     <Linkedin size={18} />
-                    linkedin.com/in/nikhil-garg8982
+                    linkedin.com/in/developer
                   </a>
                 </div>
               </section>
@@ -129,22 +130,9 @@ export default function ResumePage() {
                   </div>
                   
                   <div>
-                    <h3 className="font-heading text-lg font-semibold mb-3">Tools & Platforms</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {['Git', 'MongoDB', 'Figma'].map((skill) => (
-                        <span 
-                          key={skill}
-                          className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                <div>
                     <h3 className="font-heading text-lg font-semibold mb-3">Frameworks & Libraries</h3>
                     <div className="flex flex-wrap gap-2">
-                      {['React', 'Node.js', 'Express', 'Tailwind CSS', 'Expo'].map((skill) => (
+                      {['React', 'Node.js', 'Express', 'Tailwind CSS'].map((skill) => (
                         <span 
                           key={skill}
                           className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
@@ -155,7 +143,20 @@ export default function ResumePage() {
                     </div>
                   </div>
                   
+                  <div>
+                    <h3 className="font-heading text-lg font-semibold mb-3">Tools & Platforms</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {['Git', 'PostgreSQL', 'MongoDB', 'Figma'].map((skill) => (
+                        <span 
+                          key={skill}
+                          className="font-paragraph text-sm px-3 py-1 bg-foreground/5 border border-foreground/10 rounded"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
+                </div>
               </section>
 
               {/* Core Competencies */}
@@ -267,6 +268,7 @@ export default function ResumePage() {
           </div>
         </div>
       </div>
+
       {/* Footer */}
       <footer className="py-12 px-8 border-t border-foreground/10">
         <div className="max-w-[100rem] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
@@ -293,6 +295,7 @@ export default function ResumePage() {
           </div>
         </div>
       </footer>
+
       {/* Print Styles */}
       <style>{`
         @media print {
