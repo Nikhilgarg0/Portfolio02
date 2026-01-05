@@ -363,13 +363,13 @@ function CodeSnippet() {
                 <div className="ml-4"><span className="text-foreground/60">focus:</span> [<span className="text-green-400">"web"</span>, <span className="text-green-400">"mobile"</span>],</div>
                 <div className="ml-4"><span className="text-foreground/60">graduating:</span> <span className="text-blue-400">2026</span>,</div>
                 <div className="ml-4"><span className="text-foreground/60">skills:</span> [<span className="text-green-400">"React"</span>, <span className="text-green-400">"TypeScript"</span>, <span className="text-green-400">"Node.js"</span>],</div>
-                <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">1</span> <span className="text-foreground/60">years,</span></div>
+                <div className="ml-4"><span className="text-foreground/60">experience:</span> <span className="text-blue-400">3</span> <span className="text-foreground/60">years,</span></div>
                 <div className="ml-4"><span className="text-foreground/60">openToWork:</span> <span className="text-blue-400">true</span></div>
                 <div>{'}'};</div>
               </div>
 
               <p className="text-foreground/70 text-sm">
-                Click anywhere outside to close this expanded view.
+                Click anywhere outside to close this expanded view. This modal demonstrates the iOS Dynamic Island-inspired interaction pattern.
               </p>
             </motion.div>
           </motion.div>

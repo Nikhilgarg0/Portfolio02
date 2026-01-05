@@ -48,7 +48,7 @@ export interface Projects {
   githubLink?: string;
   /** @wixFieldType url */
   liveLink?: string;
-  /** @wixFieldType image - Contains image URL, render with <Image> component, NOT as text */
+  /** @wixFieldType image */
   mainScreenshot?: string;
   /** @wixFieldType text */
   techStack?: string;
