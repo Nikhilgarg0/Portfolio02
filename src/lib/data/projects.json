@@ -1,0 +1,12 @@
+[
+    {
+        "_id": "proj1",
+        "projectName": "ASIZTO",
+        "projectType": "AI Powered Health Assistant Mobile App",
+        "projectDescription": "Developed a cross-platform health management application featuring secure user authentication, medication reminders, and adherence tracking that improved consistency by 35% using a notification tracking system. Implemented appointment scheduling and emergency contact management. Integrated AI-driven health insights and medicine information retrieval using the Google Gemini API to enhance personalized user experience. Delivered an intuitive, real-time synchronized mobile app optimized for Android.",
+        "techStack": "React Native, Kotlin, Expo Framework, Firebase Authentication, Firestore Database",
+        "links": [],
+        "githubLink": "https://github.com/Nikhilgarg0",
+        "liveLink": ""
+    }
+]

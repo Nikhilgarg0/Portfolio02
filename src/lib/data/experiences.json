@@ -1,0 +1,11 @@
+[
+    {
+        "_id": "exp1",
+        "title": "Software Intern",
+        "organizationName": "Cisco",
+        "startDate": "2025-06-01",
+        "endDate": "2025-07-31",
+        "description": "Configured and troubleshooted enterprise-level networks, reducing downtime by 20%. Implemented VLANs and OSPF routing, improving routing efficiency across three subnets. Practiced IP addressing, subnetting, and CLI-based automation. Tools used: Cisco Packet Tracer, Routers, Switches, VLAN, CLI.",
+        "location": "Indore, MP"
+    }
+]

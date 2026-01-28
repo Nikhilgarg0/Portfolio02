@@ -16,6 +16,7 @@ out
 dist
 .astro/
 .wix
+.next/
 
 # dependencies
 node_modules
