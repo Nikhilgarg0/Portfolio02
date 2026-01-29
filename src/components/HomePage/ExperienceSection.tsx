@@ -20,7 +20,6 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
         if (bgPath && activePath && items && items.length > 0) {
             // Calculate total height dynamically based on items
             const lastItem = items[items.length - 1] as HTMLElement;
-            const containerTop = containerRef.current?.offsetTop || 0;
             // Approximate height better to cover full list
             const totalHeight = lastItem.offsetTop + lastItem.offsetHeight + 100;
 
@@ -45,40 +44,58 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
                 }
             });
         }
+
+        // --- Added Entrance Animation ---
+        // Animate the whole section entering like a card
+        gsap.from(containerRef.current, {
+            y: 100,
+            scale: 0.9,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 90%", // Start when top of section hits bottom 90% of viewport
+                toggleActions: "play none none reverse"
+            }
+        });
+
     }, { scope: containerRef, dependencies: [experiences] });
 
     return (
-        <section id="experience" className="py-20 md:py-32 bg-foreground/[0.02] border-y border-foreground/5">
-            <div className="max-w-[100rem] mx-auto px-4 md:px-12 relative" ref={containerRef}>
-                <AnimatedElement>
-                    <h2 className="font-heading text-3xl md:text-4xl font-bold mb-16 md:mb-20 text-center">Experience Journey</h2>
-                </AnimatedElement>
+        <div className="bg-white w-full relative z-10 pb-20"> {/* White container to visualize the card shape */}
+            <section id="experience" className="py-20 md:py-32 bg-background border-t border-foreground/5 rounded-[40px] md:rounded-[60px] overflow-hidden mt-[-40px] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] relative z-20 mx-4 md:mx-6 lg:mx-10 min-h-[80vh]">
+                <div className="max-w-[100rem] mx-auto px-4 md:px-12 relative" ref={containerRef}>
+                    <AnimatedElement>
+                        <h2 className="font-heading text-3xl md:text-4xl font-bold mb-16 md:mb-20 text-center">Experience Journey</h2>
+                    </AnimatedElement>
 
-                {/* GSAP SVG Timeline */}
-                <svg className="absolute left-0 md:left-1/2 top-[120px] bottom-0 w-full h-[calc(100%-120px)] pointer-events-none hidden md:block -translate-x-1/2 overflow-visible">
-                    <path
-                        className="timeline-path"
-                        d="M 1 0 V 2000" // Initial path, will be updated via JS
-                        fill="none"
-                        stroke="rgba(255, 255, 255, 0.1)"
-                        strokeWidth="2"
-                    />
-                    <path
-                        className="timeline-path-active"
-                        d="M 1 0 V 2000" // Duplicate path for the "active" fill
-                        fill="none"
-                        stroke="#3b82f6" // Accent color (blue-500 approx)
-                        strokeWidth="2"
-                    />
-                </svg>
+                    {/* GSAP SVG Timeline */}
+                    <svg className="absolute left-0 md:left-1/2 top-[120px] bottom-0 w-full h-[calc(100%-120px)] pointer-events-none hidden md:block -translate-x-1/2 overflow-visible">
+                        <path
+                            className="timeline-path"
+                            d="M 1 0 V 2000" // Initial path, will be updated via JS
+                            fill="none"
+                            stroke="rgba(255, 255, 255, 0.1)"
+                            strokeWidth="2"
+                        />
+                        <path
+                            className="timeline-path-active"
+                            d="M 1 0 V 2000" // Duplicate path for the "active" fill
+                            fill="none"
+                            stroke="#3b82f6" // Accent color (blue-500 approx)
+                            strokeWidth="2"
+                        />
+                    </svg>
 
-                <div className="relative z-10 space-y-16 md:space-y-32">
-                    {experiences.map((exp, index) => (
-                        <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
-                    ))}
+                    <div className="relative z-10 space-y-16 md:space-y-32">
+                        {experiences.map((exp, index) => (
+                            <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     );
 }
 
