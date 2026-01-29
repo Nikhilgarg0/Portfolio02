@@ -17,7 +17,7 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
         const activePath = containerRef.current?.querySelector('.timeline-path-active') as SVGPathElement;
         const items = containerRef.current?.querySelectorAll('.experience-item');
 
-        if (bgPath && activePath && items.length > 0) {
+        if (bgPath && activePath && items && items.length > 0) {
             // Calculate total height dynamically based on items
             const lastItem = items[items.length - 1] as HTMLElement;
             const containerTop = containerRef.current?.offsetTop || 0;

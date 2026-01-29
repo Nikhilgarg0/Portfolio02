@@ -156,8 +156,6 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
                     style={{ y }}
                     onHoverStart={() => setIsHovered(true)}
                     onHoverEnd={() => setIsHovered(false)}
-                    onHoverStart={() => setIsHovered(true)}
-                    onHoverEnd={() => setIsHovered(false)}
                     className="relative aspect-[16/10] rounded-[32px] overflow-hidden border border-white/5 shadow-2xl group-hover:scale-[1.02] transition-transform duration-700"
                 >
                     {p.mainScreenshot ? (
