@@ -35,7 +35,7 @@ export default function ContactSection() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-accent/10 border border-accent/20 rounded-2xl p-8 md:p-12 text-center"
+                        className="bg-background/20 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 md:p-12 text-center shadow-xl"
                     >
                         <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
                             <Mail className="text-white" size={32} />
@@ -50,14 +50,16 @@ export default function ContactSection() {
                         </button>
                     </motion.div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                    <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 bg-background/20 backdrop-blur-2xl border border-white/5 rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 relative z-10">
                             <div className="relative pt-6">
                                 <motion.label
                                     animate={{
-                                        y: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? -28 : 0,
-                                        fontSize: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '0.75rem' : '0.875rem',
-                                        color: activeField === 'name' || (document.getElementById('name') as HTMLInputElement)?.value ? '#007BFF' : '#999999'
+                                        y: activeField === 'name' || (typeof document !== 'undefined' && (document.getElementById('name') as HTMLInputElement)?.value) ? -28 : 0,
+                                        fontSize: activeField === 'name' || (typeof document !== 'undefined' && (document.getElementById('name') as HTMLInputElement)?.value) ? '0.75rem' : '0.875rem',
+                                        color: activeField === 'name' || (typeof document !== 'undefined' && (document.getElementById('name') as HTMLInputElement)?.value) ? '#007BFF' : '#999999'
                                     }}
                                     transition={{ duration: 0.2, ease: EASE_OUT }}
                                     className="absolute left-4 block pointer-events-none"
@@ -70,15 +72,15 @@ export default function ContactSection() {
                                     required
                                     onFocus={() => setActiveField('name')}
                                     onBlur={() => setActiveField(null)}
-                                    className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base backdrop-blur-sm"
                                 />
                             </div>
                             <div className="relative pt-6">
                                 <motion.label
                                     animate={{
-                                        y: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? -28 : 0,
-                                        fontSize: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '0.75rem' : '0.875rem',
-                                        color: activeField === 'email' || (document.getElementById('email') as HTMLInputElement)?.value ? '#007BFF' : '#999999'
+                                        y: activeField === 'email' || (typeof document !== 'undefined' && (document.getElementById('email') as HTMLInputElement)?.value) ? -28 : 0,
+                                        fontSize: activeField === 'email' || (typeof document !== 'undefined' && (document.getElementById('email') as HTMLInputElement)?.value) ? '0.75rem' : '0.875rem',
+                                        color: activeField === 'email' || (typeof document !== 'undefined' && (document.getElementById('email') as HTMLInputElement)?.value) ? '#007BFF' : '#999999'
                                     }}
                                     transition={{ duration: 0.2, ease: EASE_OUT }}
                                     className="absolute left-4 block pointer-events-none"
@@ -92,12 +94,12 @@ export default function ContactSection() {
                                     required
                                     onFocus={() => setActiveField('email')}
                                     onBlur={() => setActiveField(null)}
-                                    className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent transition-colors text-sm md:text-base backdrop-blur-sm"
                                 />
                             </div>
                         </div>
 
-                        <div>
+                        <div className="relative z-10">
                             <label className="block text-sm font-medium text-foreground/70 mb-3">Subject</label>
                             <div className="flex flex-wrap gap-2 md:gap-3">
                                 {subjects.map((subject) => (
@@ -108,12 +110,12 @@ export default function ContactSection() {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         animate={{
-                                            borderColor: selectedSubject === subject ? '#007BFF' : '#333333',
-                                            backgroundColor: selectedSubject === subject ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
+                                            borderColor: selectedSubject === subject ? '#007BFF' : 'rgba(255,255,255,0.1)',
+                                            backgroundColor: selectedSubject === subject ? 'rgba(0, 123, 255, 0.1)' : 'rgba(255,255,255,0.02)',
                                             color: selectedSubject === subject ? '#007BFF' : '#999999'
                                         }}
                                         transition={{ duration: 0.2, ease: EASE_OUT }}
-                                        className={`px-4 py-2 rounded-lg border text-xs md:text-sm font-medium`}
+                                        className={`px-4 py-2 rounded-full border text-xs md:text-sm font-medium backdrop-blur-sm`}
                                     >
                                         {subject}
                                     </motion.button>
@@ -121,12 +123,12 @@ export default function ContactSection() {
                             </div>
                         </div>
 
-                        <div className="relative pt-6">
+                        <div className="relative pt-6 z-10">
                             <motion.label
                                 animate={{
-                                    y: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? -28 : 0,
-                                    fontSize: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '0.75rem' : '0.875rem',
-                                    color: activeField === 'message' || (document.getElementById('message') as HTMLTextAreaElement)?.value ? '#007BFF' : '#999999'
+                                    y: activeField === 'message' || (typeof document !== 'undefined' && (document.getElementById('message') as HTMLTextAreaElement)?.value) ? -28 : 0,
+                                    fontSize: activeField === 'message' || (typeof document !== 'undefined' && (document.getElementById('message') as HTMLTextAreaElement)?.value) ? '0.75rem' : '0.875rem',
+                                    color: activeField === 'message' || (typeof document !== 'undefined' && (document.getElementById('message') as HTMLTextAreaElement)?.value) ? '#007BFF' : '#999999'
                                 }}
                                 transition={{ duration: 0.2, ease: EASE_OUT }}
                                 className="absolute left-4 block pointer-events-none"
@@ -140,24 +142,24 @@ export default function ContactSection() {
                                 rows={5}
                                 onFocus={() => setActiveField('message')}
                                 onBlur={() => setActiveField(null)}
-                                className="w-full bg-transparent border border-foreground/20 rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none text-sm md:text-base"
+                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-accent transition-colors resize-none text-sm md:text-base backdrop-blur-sm"
                             />
                             <div className="text-right text-xs text-foreground/40 mt-2">0/1000</div>
                         </div>
 
-                        <div className="flex justify-end pt-4">
+                        <div className="flex justify-end pt-4 relative z-10">
                             <button
                                 type="submit"
                                 disabled={formState === 'submitting'}
-                                className="px-6 md:px-8 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base"
+                                className="px-6 md:px-8 py-3 bg-accent text-white font-medium rounded-full hover:bg-accent/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base shadow-lg shadow-accent/20"
                             >
                                 <Mail size={18} />
                                 {formState === 'submitting' ? 'Sending...' : 'Send Message'}
                             </button>
                         </div>
 
-                        <p className="text-xs text-foreground/40 text-center pt-4">
-                            Prefer email? Reach me at <a href="mailto:hello@example.com" className="text-accent hover:underline">hello@example.com</a>
+                        <p className="text-xs text-foreground/40 text-center pt-4 relative z-10">
+                            Prefer email? Reach me at <a href="mailto:official.nikhilgarg@gmail.com" className="text-accent hover:underline">official.nikhilgarg@gmail.com</a>
                         </p>
                     </form>
                 )}

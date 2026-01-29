@@ -6,6 +6,11 @@ import { Code2 } from 'lucide-react';
 import { AnimatedElement } from '@/components/shared/AnimatedElement';
 import { EASE_OUT } from '@/lib/constants';
 import { Image } from '@/components/ui/image';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // --- About Section ---
 export default function AboutSection() {
@@ -33,7 +38,7 @@ export default function AboutSection() {
                 <div className="lg:col-span-8 flex flex-col justify-start">
                     <AnimatedElement delay={200}>
                         <p className="font-heading text-xl md:text-3xl leading-relaxed text-foreground/90 mb-12 md:mb-16">
-                            I design systems that scale. Every decision prioritizes <span className="text-accent">readability, maintainability, and performance</span> over expedience.
+                            Full-stack and mobile developer with hands-on experience in MERN, React Native, and Kotlin. Skilled in building scalable applications, integrating AI features, and optimizing backend workflows.
                         </p>
                     </AnimatedElement>
 
@@ -68,7 +73,7 @@ function ImageWithParallax({ imageY }: { imageY: any }) {
             >
                 <Image
                     src="https://static.wixstatic.com/media/445dc7_21ec1884c0d540bfaa549a9aaf780056~mv2.png?originWidth=768&originHeight=960"
-                    alt="Developer working"
+                    alt="Nikhil Garg"
                     className="w-full h-full object-cover opacity-75"
                 />
             </motion.div>
@@ -85,9 +90,25 @@ function ImageWithParallax({ imageY }: { imageY: any }) {
 // The Craft Section
 function CraftSection() {
     const [isFocused, setIsFocused] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        gsap.from(".craft-item", {
+            scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 80%",
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out"
+        });
+    }, { scope: containerRef });
 
     return (
         <div
+            ref={containerRef}
             onMouseEnter={() => setIsFocused(true)}
             onMouseLeave={() => setIsFocused(false)}
             className="mb-16 pb-16 border-b border-foreground/10"
@@ -102,7 +123,7 @@ function CraftSection() {
                 </motion.div>
 
                 <h3 className="font-heading text-3xl font-bold text-foreground">
-                    The Craft
+                    My Focus
                 </h3>
 
                 <motion.p
@@ -110,14 +131,14 @@ function CraftSection() {
                     transition={{ duration: 0.2 }}
                     className="text-lg leading-relaxed max-w-2xl"
                 >
-                    I approach every problem as a systems design challenge. Code is communication—clarity and structure matter as much as functionality. I prioritize:
+                    I focus on creating impactful digital products with clean architecture and maintainable code. I prioritize:
                 </motion.p>
 
                 <ul className="space-y-3 mt-6">
                     {[
-                        { label: 'Readability', desc: 'Code that explains itself through clear naming and structure' },
-                        { label: 'Scalability', desc: 'Architectures that grow without technical debt' },
-                        { label: 'Maintainability', desc: 'Systems designed for future developers, including myself' }
+                        { label: 'User-Centric', desc: 'Developing products that solve real problems for users' },
+                        { label: 'Scalability', desc: 'Building systems that can grow and handle load' },
+                        { label: 'Automation', desc: 'Optimizing workflows and backend processes' }
                     ].map((item) => (
                         <CraftPrinciple key={item.label} label={item.label} desc={item.desc} isFocused={isFocused} />
                     ))}
@@ -133,7 +154,7 @@ function CraftPrinciple({ label, desc, isFocused }: { label: string; desc: strin
         <motion.li
             animate={{ opacity: isFocused ? 1 : 0.7 }}
             transition={{ duration: 0.2 }}
-            className="flex items-start gap-3 group"
+            className="flex items-start gap-3 group craft-item"
         >
             <motion.span
                 animate={{ width: isFocused ? 24 : 16 }}
@@ -153,18 +174,24 @@ function StackSection() {
     const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
     const technologies = [
-        { name: 'React', category: 'Frontend' },
-        { name: 'TypeScript', category: 'Language' },
-        { name: 'Node.js', category: 'Runtime' },
-        { name: 'PostgreSQL', category: 'Database' },
-        { name: 'Tailwind', category: 'Styling' },
-        { name: 'Git', category: 'VCS' }
+        { name: 'MERN', category: 'Stack' },
+        { name: 'React Native', category: 'Mobile' },
+        { name: 'Kotlin', category: 'Mobile' },
+        { name: 'Java', category: 'Language' },
+        { name: 'Python', category: 'Language' },
+        { name: 'C++', category: 'Language' },
+        { name: 'Expo', category: 'Mobile' },
+        { name: 'Android Studio', category: 'Tool' },
+        { name: 'Firebase', category: 'Cloud' },
+        { name: 'Supabase', category: 'Cloud' },
+        { name: 'Google Cloud', category: 'Cloud' },
+        { name: 'Git', category: 'Tool' }
     ];
 
     return (
         <div className="space-y-6">
             <h3 className="font-heading text-lg font-semibold text-foreground/70 uppercase tracking-wide">
-                Tools & Technologies
+                Skills & Technologies
             </h3>
 
             <div className="flex flex-wrap gap-3">
@@ -175,19 +202,16 @@ function StackSection() {
                         onMouseLeave={() => setHoveredTech(null)}
                         animate={{
                             opacity: hoveredTech === tech.name ? 1 : 0.6,
-                            borderColor: hoveredTech === tech.name ? '#007BFF' : '#333333'
+                            borderColor: hoveredTech === tech.name ? '#007BFF' : 'rgba(255,255,255,0.05)',
+                            backgroundColor: hoveredTech === tech.name ? 'rgba(0, 123, 255, 0.1)' : 'rgba(255,255,255,0.02)'
                         }}
                         transition={{ duration: 0.2 }}
-                        className="px-4 py-2 text-sm font-mono border border-foreground/20 rounded-md text-foreground/60 cursor-default"
+                        className="px-4 py-2 text-sm font-mono border backdrop-blur-md rounded-full text-foreground/60 cursor-default"
                     >
                         {tech.name}
                     </motion.div>
                 ))}
             </div>
-
-            <p className="text-xs text-foreground/40 mt-6">
-                Tools evolve. Systems thinking is timeless.
-            </p>
         </div>
     );
 }

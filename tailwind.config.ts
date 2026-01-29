@@ -44,6 +44,15 @@ const config: Config = {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)'
+            },
+            keyframes: {
+                'cursor-blink': {
+                    '0%, 100%': { opacity: '1' },
+                    '50%': { opacity: '0' }
+                }
+            },
+            animation: {
+                'cursor-blink': 'cursor-blink 1s step-end infinite'
             }
         }
     },
