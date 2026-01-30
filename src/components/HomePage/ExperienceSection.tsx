@@ -154,3 +154,4 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
         </div>
     );
 }
+
