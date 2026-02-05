@@ -46,7 +46,7 @@ export default function CustomCursor() {
                     x: cursorXSpring,
                     y: cursorYSpring,
                 }}
-                className="fixed w-8 h-8 border border-accent/40 rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 hidden md:block"
+                className="fixed w-8 h-8 border border-accent/40 rounded-full pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 hidden md:block"
             />
 
             <motion.div
@@ -59,7 +59,7 @@ export default function CustomCursor() {
                     backgroundColor: isHoveringInteractive ? '#007BFF' : 'rgba(0, 123, 255, 0.6)',
                 }}
                 transition={{ duration: 0.2 }}
-                className="fixed w-2 h-2 bg-accent rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 hidden md:block"
+                className="fixed w-2 h-2 bg-accent rounded-full pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 hidden md:block"
             />
         </>
     );

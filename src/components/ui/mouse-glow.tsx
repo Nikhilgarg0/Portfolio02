@@ -22,7 +22,7 @@ export function MouseGlow() {
     }, []);
 
     return (
-        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="fixed inset-0 z-[9999] overflow-hidden pointer-events-none">
             <div
                 ref={blobRef}
                 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-accent/20 blur-[100px] opacity-20"

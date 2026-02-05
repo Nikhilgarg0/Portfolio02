@@ -103,23 +103,23 @@ export default function HeroSection() {
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-start overflow-hidden pt-24 md:pt-32 pb-10 md:pb-16 px-4 md:px-12 bg-background isolate">
+        <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center md:justify-start overflow-hidden pt-8 md:pt-24 pb-8 md:pb-12 px-4 md:px-12 bg-background isolate">
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hero-bg-elements">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-                <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[150px] w-[150px] md:h-[250px] md:w-[250px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
+                <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[120px] w-[120px] md:h-[200px] md:w-[200px] rounded-full bg-accent/20 opacity-20 blur-[80px]" />
             </div>
 
             <div className="z-10 w-full max-w-5xl relative flex flex-col items-center">
-                <div className="flex justify-center mb-6 md:mb-10 hero-scroll-fade-wrapper relative z-0 mix-blend-difference text-white">
+                <div className="flex justify-center mb-3 md:mb-8 hero-scroll-fade-wrapper relative z-0 mix-blend-difference text-white">
                     <div className="hero-fade-in-item">
                         <AvailabilityBadge />
                     </div>
                 </div>
 
-                <div ref={textRef} className="text-center mb-3 md:mb-5 relative z-0">
-                    <h1 ref={nameRef} className="font-heading text-4xl md:text-7xl lg:text-8xl tracking-tight leading-[1.1] font-bold flex flex-wrap justify-center items-center gap-2 md:gap-4">
+                <div ref={textRef} className="text-center mb-2 md:mb-4 relative z-0">
+                    <h1 ref={nameRef} className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.1] font-bold flex flex-wrap justify-center items-center gap-2 md:gap-3">
                         {/* Wrapper for Name Text Fade */}
-                        <span className="hero-scroll-fade-wrapper flex flex-wrap justify-center items-center gap-2 md:gap-4 mix-blend-difference text-white">
+                        <span className="hero-scroll-fade-wrapper flex flex-wrap justify-center items-center gap-2 md:gap-3 mix-blend-difference text-white">
                             <div className="overflow-hidden flex items-center">
                                 <span className="hero-text-char inline-block">NIKHIL</span>
                             </div>
@@ -132,11 +132,11 @@ export default function HeroSection() {
                         {/* Mix-blend-difference requires Z-Index higher than backgrounds but needs to interact with text underneath */}
                         <span
                             ref={cursorRef}
-                            className="inline-block w-4 h-10 md:w-8 md:h-20 bg-white rounded-sm animate-cursor-blink origin-center relative z-50 mix-blend-difference"
+                            className="inline-block w-2 h-6 sm:w-4 sm:h-10 md:w-6 md:h-16 bg-white rounded-sm animate-cursor-blink origin-center relative z-50 mix-blend-difference"
                         />
                     </h1>
 
-                    <div className="hero-scroll-fade-wrapper text-accent mt-4 font-mono text-base md:text-xl flex items-center justify-center gap-2 flex-wrap opacity-80 relative z-0 mix-blend-difference">
+                    <div className="hero-scroll-fade-wrapper text-accent mt-2 md:mt-3 font-mono text-xs sm:text-sm md:text-lg flex items-center justify-center gap-1 sm:gap-2 flex-wrap opacity-80 relative z-0 mix-blend-difference">
                         <div className="hero-fade-in-item flex gap-2">
                             <span className="inline-block">Full-Stack</span> <span className="inline-block">&</span> <span className="inline-block">Mobile</span> <span className="inline-block">Developer</span>
                         </div>
@@ -145,31 +145,31 @@ export default function HeroSection() {
 
                 {/* Content Wrapper for Scroll Fade */}
                 <div className="hero-scroll-fade-wrapper w-full flex flex-col items-center relative z-0 mix-blend-difference">
-                    <p className="text-center text-sm md:text-lg text-foreground/70 mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed px-2 hero-fade-in-item relative z-0 text-white">
+                    <p className="text-center text-xs sm:text-sm md:text-base text-foreground/70 mb-4 sm:mb-6 md:mb-10 max-w-xl mx-auto leading-relaxed px-2 hero-fade-in-item relative z-0 text-white">
                         Passionate about user-centric product development, automation, and delivering reliable cloud-based solutions.
                     </p>
 
-                    <div className="mb-8 md:mb-12 bg-zinc-700/80 border border-foreground/10 rounded-[20px] p-3 md:p-6 font-mono text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-zinc-600 transition-all duration-500 hero-fade-in-item relative z-0 w-full mix-blend-normal">
-                        <div className="flex gap-2 mb-4">
-                            <div className="w-3 h-3 rounded-full bg-red-500/60" />
-                            <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-                            <div className="w-3 h-3 rounded-full bg-green-500/60" />
+                    <div className="mb-4 sm:mb-6 md:mb-10 bg-zinc-700/80 border border-foreground/10 rounded-[12px] md:rounded-[16px] p-2 sm:p-3 md:p-5 font-mono text-[10px] sm:text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-zinc-600 transition-all duration-500 hero-fade-in-item relative z-0 w-full mix-blend-normal max-w-2xl">
+                        <div className="flex gap-2 mb-3">
+                            <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
                         </div>
                         <CodeSnippet />
-                        <p className="text-xs text-foreground/40 mt-4 text-center">Click to expand</p>
+                        <p className="text-[10px] text-foreground/40 mt-3 text-center">Click to expand</p>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center mb-10 md:mb-12 hero-fade-in-item relative z-0">
+                    <div className="flex flex-row gap-2 md:gap-3 justify-center items-center mb-4 sm:mb-6 md:mb-10 hero-fade-in-item relative z-0 w-full max-w-md">
                         <ProjectsCTA />
-                        <a href="#contact" className="px-6 py-3 border border-foreground/20 rounded-full text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium text-sm md:text-base">
+                        <a href="#contact" className="flex-1 px-5 py-2.5 border border-foreground/20 rounded-full text-foreground/70 hover:border-accent hover:text-accent transition-all duration-300 font-medium text-xs md:text-sm text-center">
                             Get in Touch
                         </a>
                     </div>
 
-                    <div className="flex justify-center gap-4 md:gap-6 hero-fade-in-item relative z-0">
-                        <SocialLink href="https://github.com/Nikhilgarg0" icon={<Github size={20} />} label="GitHub" />
-                        <SocialLink href="https://www.linkedin.com/in/Nikhil-garg8982" icon={<Linkedin size={20} />} label="LinkedIn" />
-                        <SocialLink href="mailto:official.nikhilgarg@gmail.com" icon={<Mail size={20} />} label="Email" />
+                    <div className="flex justify-center gap-4 md:gap-5 hero-fade-in-item relative z-0">
+                        <SocialLink href="https://github.com/Nikhilgarg0" icon={<Github size={18} />} label="GitHub" />
+                        <SocialLink href="https://www.linkedin.com/in/Nikhil-garg8982" icon={<Linkedin size={18} />} label="LinkedIn" />
+                        <SocialLink href="mailto:official.nikhilgarg@gmail.com" icon={<Mail size={18} />} label="Email" />
                     </div>
                 </div>
             </div>
@@ -178,9 +178,9 @@ export default function HeroSection() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2, duration: 1 }}
-                className="hero-fade-in-item absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 animate-bounce text-foreground/40 z-20"
+                className="hero-fade-in-item absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-foreground/40 z-20"
             >
-                <ChevronDown size={24} />
+                <ChevronDown size={20} />
             </motion.div>
         </section>
     );
@@ -359,7 +359,7 @@ function ProjectsCTA() {
             href="#projects"
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="group relative px-8 py-4 bg-foreground text-background font-medium rounded-full overflow-hidden"
+            className="group relative flex-1 px-5 py-2.5 bg-foreground text-background font-medium rounded-full overflow-hidden w-full sm:w-auto text-center"
         >
             <motion.div
                 className="absolute inset-0 w-full h-full bg-accent"
@@ -369,11 +369,11 @@ function ProjectsCTA() {
             />
 
             <motion.span
-                className="relative flex items-center gap-2"
+                className="relative flex items-center gap-2 justify-center"
                 animate={{ x: isHovered ? 4 : 0 }}
                 transition={{ duration: 0.3, ease: EASE_OUT }}
             >
-                <span className="text-sm">View Projects</span>
+                <span className="text-xs md:text-sm">View Projects</span>
 
                 <motion.div
                     animate={{
@@ -382,7 +382,7 @@ function ProjectsCTA() {
                     }}
                     transition={{ duration: 0.3, ease: EASE_OUT }}
                 >
-                    <ArrowRight size={18} />
+                    <ArrowRight size={16} />
                 </motion.div>
             </motion.span>
         </motion.a>

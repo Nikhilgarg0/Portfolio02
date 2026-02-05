@@ -19,11 +19,15 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
 
         if (bgPath && activePath && items && items.length > 0) {
             // Calculate total height dynamically based on items
+            const firstItem = items[0] as HTMLElement;
             const lastItem = items[items.length - 1] as HTMLElement;
-            // Approximate height better to cover full list
-            const totalHeight = lastItem.offsetTop + lastItem.offsetHeight + 100;
 
-            gsap.set([bgPath, activePath], { attr: { d: `M 1 0 V ${totalHeight}` } });
+            // Calculate from first item to last item with padding
+            const startY = firstItem.offsetTop;
+            const endY = lastItem.offsetTop + lastItem.offsetHeight;
+            const totalHeight = endY - startY + 50; // Extra padding at end
+
+            gsap.set([bgPath, activePath], { attr: { d: `M 0 0 V ${totalHeight}` } });
 
             // Prepare for stroke animation
             const length = activePath.getTotalLength();
@@ -32,15 +36,15 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
                 strokeDashoffset: length
             });
 
-            // Animate the "active" path to draw down
+            // Animate the "active" path to draw down with smoother timing
             gsap.to(activePath, {
                 strokeDashoffset: 0,
                 ease: "none",
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: "top 20%",
-                    end: "bottom 20%",
-                    scrub: 1,
+                    start: "top center",
+                    end: "bottom center",
+                    scrub: 0.5, // Smoother scrubbing
                 }
             });
         }
@@ -63,28 +67,29 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
     }, { scope: containerRef, dependencies: [experiences] });
 
     return (
-        <div className="bg-white w-full relative z-10 pb-20"> {/* White container to visualize the card shape */}
-            <section id="experience" className="py-12 md:py-16 bg-background border-t border-foreground/5 rounded-[32px] md:rounded-[48px] overflow-hidden mt-[-30px] shadow-[0_-15px_50px_rgba(0,0,0,0.15)] relative z-20 mx-4 md:mx-6 lg:mx-8 min-h-[60vh]">
-                <div className="max-w-[100rem] mx-auto px-4 md:px-12 relative" ref={containerRef}>
+        <div className="bg-white w-full relative z-10 pb-12 md:pb-16"> {/* White container to visualize the card shape */}
+            <section id="experience" className="py-8 md:py-10 lg:py-12 bg-background border-t border-foreground/5 rounded-[20px] md:rounded-[32px] lg:rounded-[40px] overflow-hidden mt-[-20px] md:mt-[-30px] shadow-[0_-15px_50px_rgba(0,0,0,0.15)] relative z-20 mx-2 sm:mx-3 md:mx-6 lg:mx-8 min-h-[40vh] md:min-h-[50vh]">
+                <div className="max-w-[100rem] mx-auto px-4 md:px-8 lg:px-12 relative" ref={containerRef}>
                     <AnimatedElement>
-                        <h2 className="font-heading text-xl md:text-2xl font-bold mb-10 md:mb-14 text-center">Experience Journey</h2>
+                        <h2 className="font-heading text-xl sm:text-2xl md:text-2xl font-bold mb-6 md:mb-8 lg:mb-12 text-center">Experience Journey</h2>
                     </AnimatedElement>
 
-                    {/* GSAP SVG Timeline */}
-                    <svg className="absolute left-0 md:left-1/2 top-[120px] bottom-0 w-full h-[calc(100%-120px)] pointer-events-none hidden md:block -translate-x-1/2 overflow-visible">
+                    {/* GSAP SVG Timeline - Positioned at middle of right half */}
+                    <svg className="absolute left-1/4 top-[20px] w-[2px] pointer-events-none hidden md:block overflow-visible" style={{ height: 'calc(100% - 100px)' }}>
                         <path
                             className="timeline-path"
-                            d="M 1 0 V 2000" // Initial path, will be updated via JS
+                            d="M 0 0 V 2000" // Initial path, will be updated via JS
                             fill="none"
                             stroke="rgba(255, 255, 255, 0.1)"
                             strokeWidth="2"
                         />
                         <path
                             className="timeline-path-active"
-                            d="M 1 0 V 2000" // Duplicate path for the "active" fill
+                            d="M 0 0 V 2000" // Duplicate path for the "active" fill
                             fill="none"
                             stroke="#3b82f6" // Accent color (blue-500 approx)
-                            strokeWidth="2"
+                            strokeWidth="3"
+                            strokeLinecap="round"
                         />
                     </svg>
 
@@ -121,7 +126,7 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
                             scale: isInView ? 1.02 : 1
                         }}
                         transition={{ duration: 0.4, ease: EASE_OUT }}
-                        className={`w-full md:w-4/5 p-8 rounded-[24px] bg-background/20 backdrop-blur-2xl border border-white/5 transition-colors duration-300 relative group shadow-[0_8px_32px_rgba(0,0,0,0.12)] ${isEven ? 'md:ml-12' : 'md:mr-12'}`}
+                        className={`w-full md:w-4/5 p-5 md:p-8 rounded-[20px] md:rounded-[24px] bg-background/20 backdrop-blur-2xl border border-white/5 transition-colors duration-300 relative group shadow-[0_8px_32px_rgba(0,0,0,0.12)] ${isEven ? 'md:ml-12' : 'md:mr-12'}`}
                     >
                         <div className={`absolute top-1/2 w-12 h-px bg-accent/30 hidden md:block ${isEven ? '-left-12' : '-right-12'}`} />
 
@@ -134,12 +139,12 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
                             className={`absolute top-1/2 w-3 h-3 rounded-full hidden md:block ${isEven ? '-left-[54px]' : '-right-[54px]'} translate-y-[-50%]`}
                         />
 
-                        <span className="inline-block px-3 py-1 mb-4 text-xs font-mono text-accent bg-accent/5 rounded-full">
+                        <span className="inline-block px-3 py-1 mb-3 md:mb-4 text-[10px] sm:text-xs font-mono text-accent bg-accent/5 rounded-full">
                             {experience.startDate ? new Date(experience.startDate).getFullYear() : 'Present'}
                         </span>
 
-                        <h3 className="font-heading text-lg font-bold mb-1">{experience.title}</h3>
-                        <p className="text-sm text-foreground/80 mb-3">{experience.organizationName}</p>
+                        <h3 className="font-heading text-base sm:text-lg font-bold mb-1">{experience.title}</h3>
+                        <p className="text-xs sm:text-sm text-foreground/80 mb-2 md:mb-3">{experience.organizationName}</p>
 
                         {experience.description && (
                             <p className="text-foreground/60 leading-relaxed text-sm">

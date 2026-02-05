@@ -2,73 +2,51 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform, LayoutGroup } from 'framer-motion';
 
 export default function Header({ activeSection }: { activeSection: string }) {
     const { scrollY } = useScroll();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Continuous scroll interpolations
-    const navWidth = useTransform(scrollY, [0, 100], ['700px', '520px']); // Increased minimum width
-    const navY = useTransform(scrollY, [0, 100], [0, 10]);
-    const bgOpacity = useTransform(scrollY, [0, 50], [0, 0.6]);
-    const borderOpacity = useTransform(scrollY, [0, 50], [0, 0.1]);
-    const blurAmount = useTransform(scrollY, [0, 50], [0, 16]);
-
-    // Logo & CV Button animations (slide in from edges)
-    // At scroll 0: gap is larger. At scroll 100: gap reduces.
-    // Instead of gap, we'll animate their opacity/scale or position to "appear" closer?
-    // User requested: "leftmost and rightmost element are far... then as we scroll they both comes closer"
-    // So distinct items start far apart, then merge into pill?
-    // Actually, current design has a wide pill that shrinks.
-    // Let's interpret "closer": Max width 600px -> 350px (or auto).
-
-    // Let's refine the width transform to be responsive
-    // On mobile, width is typically '95%' -> '90%'.
-    // We can use a motion value for width but simpler to use max-width or similar.
-    // To handle responsive units in Framer Motion efficiently is tricky with string interpolation.
-    // But we can just use class state for simplistic transitions OR proper motion values.
-
-    // The user specifically disliked the "sudden" jump of `isScrolled`.
-    // So we MUST use scrollY mapping.
-
-    // We will use a unique approach: animate opacity/transform of outer elements based on scroll
-    // and animate the container width.
+    // Close mobile menu when scrolling
+    useEffect(() => {
+        const handleScroll = () => {
+            if (isMobileMenuOpen) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isMobileMenuOpen]);
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 flex justify-center py-4 pointer-events-none">
-            <motion.nav
-                style={{
-                    width: useTransform(scrollY, [0, 100], ['90%', 'auto']), // Fallback for mobile/desktop mix?
-                    // Better approach: Use constraints. 
-                    // Let's use standard layout animation for width but driven by scroll classes?
-                    // No, "ease in manner". Interpolation is best.
-                    // But '90%' to 'auto' isn't interpolatable easily. 
-                    // Let's stick to pixel approximations for desktop and percentage for mobile?
-                    // Actually, let's keep the pill "auto" size mostly but add padding/margin animation.
-                }}
-                className="pointer-events-auto flex items-center justify-between px-2 p-2 rounded-full border transition-shadow duration-500"
+            {/* Desktop Navigation */}
+            <div className="hidden md:block pointer-events-auto">
+                <DesktopNav activeSection={activeSection} scrollY={scrollY} />
+            </div>
 
-            // We'll manualy bind styles because Tailwind classes can't interpolte continuously
-            >
-                <NavContent activeSection={activeSection} scrollY={scrollY} />
-            </motion.nav>
+            {/* Mobile Navigation - iOS Dynamic Island Style */}
+            <div className="md:hidden pointer-events-auto">
+                <MobileNav
+                    activeSection={activeSection}
+                    isOpen={isMobileMenuOpen}
+                    setIsOpen={setIsMobileMenuOpen}
+                />
+            </div>
         </header>
     );
 }
 
-function NavContent({ activeSection, scrollY }: { activeSection: string; scrollY: any }) {
-    // Desktop width interpolation
-    // At top (0): Max width ~700px
-    // Scrolled (100): Fit content ~520px (wider for 4 items)
-
+// Desktop Navigation Component
+function DesktopNav({ activeSection, scrollY }: { activeSection: string; scrollY: any }) {
     const containerWidth = useTransform(scrollY, [0, 100], ['700px', '520px']);
     const containerBg = useTransform(scrollY, [0, 100], ['rgba(0,0,0,0)', 'rgba(9,9,11,0.6)']);
     const containerBorder = useTransform(scrollY, [0, 100], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.1)']);
     const containerBackdrop = useTransform(scrollY, [0, 100], ['blur(0px)', 'blur(12px)']);
     const shadowOpacity = useTransform(scrollY, [0, 100], [0, 0.1]);
 
-    // Nav items
     const navItems = ['About', 'Experience', 'Projects', 'Contact'];
 
     return (
@@ -80,7 +58,7 @@ function NavContent({ activeSection, scrollY }: { activeSection: string; scrollY
                 backdropFilter: containerBackdrop,
                 boxShadow: useTransform(shadowOpacity, v => `0 8px 32px rgba(0,0,0,${v})`)
             }}
-            className="flex items-center justify-between px-2 py-1.5 rounded-full border md:w-auto w-[90%] mx-auto overflow-hidden"
+            className="flex items-center justify-between px-2 py-1.5 rounded-full border overflow-hidden"
         >
             <Link href="/" className="px-3 py-2 font-heading font-bold flex items-center gap-2 group shrink-0">
                 <div className="w-8 h-8 bg-zinc-900 text-white flex items-center justify-center rounded-full font-mono text-xs border border-white/10 shadow-inner group-hover:scale-105 transition-transform duration-300">
@@ -121,5 +99,94 @@ function NavContent({ activeSection, scrollY }: { activeSection: string; scrollY
                 <ChevronDown size={14} className="group-hover:translate-y-0.5 transition-transform opacity-50" />
             </Link>
         </motion.div>
+    );
+}
+
+// Mobile Navigation - iOS Dynamic Island Style
+function MobileNav({ activeSection, isOpen, setIsOpen }: { activeSection: string; isOpen: boolean; setIsOpen: (open: boolean) => void }) {
+    const navItems = ['About', 'Experience', 'Projects', 'Contact'];
+
+    return (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+            <AnimatePresence mode="wait">
+                {!isOpen ? (
+                    // Collapsed State - Dynamic Island Pill
+                    <motion.div
+                        key="collapsed"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+                        onClick={() => setIsOpen(true)}
+                        className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-2xl cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 bg-white/10 rounded-full flex items-center justify-center">
+                                <Menu size={14} className="text-white" />
+                            </div>
+                            <span className="text-sm font-medium text-white">Menu</span>
+                        </div>
+                    </motion.div>
+                ) : (
+                    // Expanded State - Full Menu
+                    <motion.div
+                        key="expanded"
+                        initial={{ scale: 0.8, opacity: 0, height: 50 }}
+                        animate={{ scale: 1, opacity: 1, height: 'auto' }}
+                        exit={{ scale: 0.8, opacity: 0, height: 50 }}
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                        className="bg-zinc-900/95 backdrop-blur-2xl border border-white/10 rounded-[32px] shadow-2xl overflow-hidden"
+                        style={{ minWidth: '280px' }}
+                    >
+                        {/* Header with Close Button */}
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                            <Link href="/" onClick={() => setIsOpen(false)}>
+                                <div className="w-8 h-8 bg-white/10 text-white flex items-center justify-center rounded-full font-mono text-xs border border-white/10">
+                                    DG
+                                </div>
+                            </Link>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="w-8 h-8 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors"
+                            >
+                                <X size={16} className="text-white" />
+                            </button>
+                        </div>
+
+                        {/* Navigation Items */}
+                        <div className="px-3 py-3 space-y-1">
+                            {navItems.map((item) => {
+                                const isActive = activeSection === item.toLowerCase();
+                                return (
+                                    <Link
+                                        key={item}
+                                        href={`#${item.toLowerCase()}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className={`block px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${isActive
+                                                ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                                                : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+                                            }`}
+                                    >
+                                        {item}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+
+                        {/* CV Button */}
+                        <div className="px-3 pb-3 pt-2 border-t border-white/5">
+                            <Link
+                                href="/resume"
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition-all duration-200"
+                            >
+                                View CV
+                                <ChevronDown size={14} className="opacity-50" />
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 }

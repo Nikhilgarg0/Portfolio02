@@ -16,20 +16,55 @@ export default function ProjectsSection({ projects }: { projects: Projects[] }) 
     const containerRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
-        // Skew cards based on scroll velocity
+        // Better entrance animation for cards
         const cards = gsap.utils.toArray('.project-card-container') as HTMLElement[];
 
         cards.forEach((card) => {
+            // Entrance animation - scale up and fade in
+            gsap.from(card, {
+                scale: 0.95,
+                opacity: 0,
+                y: 60,
+                duration: 1,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    end: "top 60%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+
+            // Subtle float effect on hover-like scroll position
             gsap.to(card, {
                 scrollTrigger: {
                     trigger: card,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: 0.5,
-                    onUpdate: (self) => {
-                        const velocity = self.getVelocity();
-                        const skew = Math.min(Math.max(velocity / -500, -5), 5); // Clamp skew
-                        gsap.to(card, { skewY: skew, overwrite: 'auto', duration: 0.1 });
+                    start: "top 60%",
+                    end: "bottom 40%",
+                    scrub: 1,
+                    onEnter: () => {
+                        gsap.to(card, {
+                            boxShadow: "0 20px 60px rgba(0, 123, 255, 0.15)",
+                            duration: 0.3
+                        });
+                    },
+                    onLeave: () => {
+                        gsap.to(card, {
+                            boxShadow: "0 0px 0px rgba(0, 0, 0, 0)",
+                            duration: 0.3
+                        });
+                    },
+                    onEnterBack: () => {
+                        gsap.to(card, {
+                            boxShadow: "0 20px 60px rgba(0, 123, 255, 0.15)",
+                            duration: 0.3
+                        });
+                    },
+                    onLeaveBack: () => {
+                        gsap.to(card, {
+                            boxShadow: "0 0px 0px rgba(0, 0, 0, 0)",
+                            duration: 0.3
+                        });
                     }
                 }
             });
@@ -37,25 +72,25 @@ export default function ProjectsSection({ projects }: { projects: Projects[] }) 
     }, { scope: containerRef, dependencies: [projects] });
 
     return (
-        <section id="projects" className="py-12 md:py-16 px-4 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
+        <section id="projects" className="py-8 md:py-10 lg:py-12 px-4 md:px-8 lg:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
             <AnimatedElement>
-                <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-16 border-b border-foreground/10 pb-4 md:pb-6 gap-3">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 lg:mb-12 border-b border-foreground/10 pb-4 md:pb-6 gap-3">
                     <div>
-                        <h2 className="font-heading text-xl md:text-3xl font-bold mb-2 md:mb-3">Selected Works</h2>
-                        <p className="text-foreground/60 max-w-md text-sm md:text-base">
+                        <h2 className="font-heading text-xl sm:text-2xl md:text-2xl font-bold mb-2">Selected Works</h2>
+                        <p className="text-foreground/60 max-w-md text-xs sm:text-sm">
                             A collection of experiments, applications, and technical explorations.
                         </p>
                     </div>
                     <Link
                         href="/projects"
-                        className="group flex items-center gap-2 text-accent hover:text-accent/80 transition-colors whitespace-nowrap text-sm md:text-base"
+                        className="group flex items-center gap-2 text-accent hover:text-accent/80 transition-colors whitespace-nowrap text-xs md:text-sm"
                     >
-                        View All Projects <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+                        View All Projects <ArrowRight className="group-hover:translate-x-1 transition-transform" size={16} />
                     </Link>
                 </div>
             </AnimatedElement>
 
-            <div className="space-y-12 md:space-y-20">
+            <div className="space-y-12 md:space-y-16">
                 {projects.map((project, index) => (
                     <ProjectCard key={project._id} project={project} index={index} />
                 ))}
@@ -101,11 +136,11 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
                                 </span>
                             </div>
 
-                            <h3 className="font-heading text-xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+                            <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                                 {p.projectName}
                             </h3>
 
-                            <p className="text-base md:text-lg text-zinc-400 leading-relaxed max-w-xl">
+                            <p className="text-sm md:text-base text-zinc-400 leading-relaxed max-w-xl">
                                 {p.projectDescription}
                             </p>
 

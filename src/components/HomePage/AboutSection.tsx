@@ -19,6 +19,7 @@ export default function AboutSection() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const skillsTrackRef = useRef<HTMLDivElement>(null);
+    const aboutTextRef = useRef<HTMLDivElement>(null);
 
     // Parallax effect removed to prevent conflict with GSAP pinning
     const imageY = 0;
@@ -29,6 +30,30 @@ export default function AboutSection() {
         const skillsTrack = skillsTrackRef.current;
         const section = sectionRef.current;
         const content = contentRef.current;
+
+        // Animate visual "ABOUT" text entrance
+        // Slides in from left as section comes into view
+        if (aboutTextRef.current) {
+            // Set explicit initial state
+            gsap.set(aboutTextRef.current, {
+                x: -200,
+                opacity: 0
+            });
+
+            gsap.to(aboutTextRef.current, {
+                x: 0,
+                opacity: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 40%", // Much later - triggers when section top is at 40% of viewport
+                    end: "top 10%",   // Finishes when section top is near top of viewport
+                    scrub: 2,
+                    id: "about-text-slide",
+                    markers: false,
+                }
+            });
+        }
 
         // Calculate scroll distance for skills
         // We do this inside a specialized function or on refresh to ensure accuracy
@@ -71,7 +96,7 @@ export default function AboutSection() {
                         scale: 1 - (shrinkProgress * 0.1),
                         opacity: 1 - shrinkProgress,
                         filter: `blur(${shrinkProgress * 10}px)`,
-                        y: -shrinkProgress * 50
+                        y: -shrinkProgress * 70
                     });
                 }
             }
@@ -81,24 +106,32 @@ export default function AboutSection() {
 
     return (
         <section id="about" className="bg-white overflow-hidden pb-12" ref={sectionRef}>
-            <div ref={contentRef} className="pt-16 md:pt-24 pb-12 md:pb-16 px-4 md:px-12 max-w-[120rem] mx-auto w-full h-full flex flex-col justify-center">
+            <div ref={contentRef} className="pt-12 md:pt-20 pb-10 md:pb-12 px-4 md:px-12 max-w-[120rem] mx-auto w-full h-full flex flex-col justify-center">
 
                 {/* Skills section moved to top above About heading */}
-                <AnimatedElement delay={100} className="mb-8 md:mb-12">
+                <AnimatedElement delay={100} className="mb-6 md:mb-10">
                     <StackSection trackRef={skillsTrackRef} />
                 </AnimatedElement>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-start">
-                    <div className="lg:col-span-4">
-                        <AnimatedElement>
-
-                            <ImageWithParallax imageY={imageY} />
-                        </AnimatedElement>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+                    {/* Image Column - Hidden on mobile, visible on large screens */}
+                    <div className="hidden lg:flex lg:col-span-4 gap-4 md:gap-6 justify-center lg:justify-end items-stretch">
+                        <div ref={aboutTextRef} className="flex flex-col justify-center">
+                            <h2 className="font-heading font-black text-8xl xl:text-10xl text-gray-300 tracking-widest leading-none [writing-mode:vertical-rl] rotate-180 select-none mix-blend-multiply">
+                                ABOUT
+                            </h2>
+                        </div>
+                        <div className="w-[70%]">
+                            <AnimatedElement className="w-full h-full">
+                                <ImageWithParallax imageY={imageY} />
+                            </AnimatedElement>
+                        </div>
                     </div>
 
+                    {/* Text Content - Full width on mobile, 8 columns on large screens */}
                     <div className="lg:col-span-8 flex flex-col justify-start">
                         <AnimatedElement delay={200}>
-                            <p className="font-heading text-base md:text-xl leading-relaxed text-gray-800 mb-8 md:mb-12">
+                            <p className="font-heading text-sm sm:text-base md:text-lg leading-relaxed text-gray-800 mb-6 md:mb-10">
                                 Full-stack and mobile developer with hands-on experience in MERN, React Native, and Kotlin. Skilled in building scalable applications, integrating AI features, and optimizing backend workflows.
                             </p>
                         </AnimatedElement>
@@ -181,14 +214,14 @@ function CraftSection() {
                     <Code2 size={28} />
                 </motion.div>
 
-                <h3 className="font-heading text-3xl font-bold text-gray-900">
+                <h3 className="font-heading text-xl md:text-2xl font-bold text-gray-900">
                     My Focus
                 </h3>
 
                 <motion.p
                     animate={{ color: isFocused ? '#1f2937' : '#6b7280' }}
                     transition={{ duration: 0.2 }}
-                    className="text-lg leading-relaxed max-w-2xl"
+                    className="text-base md:text-lg leading-relaxed max-w-2xl"
                 >
                     I focus on creating impactful digital products with clean architecture and maintainable code. I prioritize:
                 </motion.p>
@@ -273,7 +306,7 @@ function StackSection({ trackRef }: { trackRef: React.RefObject<HTMLDivElement |
             >
                 <div
                     ref={trackRef}
-                    className="flex gap-10 w-max items-center pl-32 pr-32" /* Increased padding for the blank space */
+                    className="flex gap-10 w-max items-center pl-32 pr-32 py-8" /* Increased padding for the blank space */
                 >
                     {technologies.map((tech, index) => (
                         <motion.div
