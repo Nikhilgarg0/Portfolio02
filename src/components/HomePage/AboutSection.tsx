@@ -80,28 +80,25 @@ export default function AboutSection() {
     }, { scope: sectionRef });
 
     return (
-        <section id="about" className="bg-white overflow-hidden" ref={sectionRef}>
-            <div ref={contentRef} className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto w-full h-full flex flex-col justify-center">
+        <section id="about" className="bg-white overflow-hidden pb-12" ref={sectionRef}>
+            <div ref={contentRef} className="pt-16 md:pt-24 pb-12 md:pb-16 px-4 md:px-12 max-w-[120rem] mx-auto w-full h-full flex flex-col justify-center">
 
                 {/* Skills section moved to top above About heading */}
-                <AnimatedElement delay={100} className="mb-16 md:mb-24">
+                <AnimatedElement delay={100} className="mb-8 md:mb-12">
                     <StackSection trackRef={skillsTrackRef} />
                 </AnimatedElement>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 items-start">
                     <div className="lg:col-span-4">
                         <AnimatedElement>
-                            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 md:mb-8 flex items-center gap-4 text-gray-900">
-                                <span className="w-8 md:w-12 h-[1px] bg-blue-500"></span>
-                                About
-                            </h2>
+
                             <ImageWithParallax imageY={imageY} />
                         </AnimatedElement>
                     </div>
 
                     <div className="lg:col-span-8 flex flex-col justify-start">
                         <AnimatedElement delay={200}>
-                            <p className="font-heading text-xl md:text-3xl leading-relaxed text-gray-800 mb-12 md:mb-16">
+                            <p className="font-heading text-base md:text-xl leading-relaxed text-gray-800 mb-8 md:mb-12">
                                 Full-stack and mobile developer with hands-on experience in MERN, React Native, and Kotlin. Skilled in building scalable applications, integrating AI features, and optimizing backend workflows.
                             </p>
                         </AnimatedElement>
@@ -238,29 +235,17 @@ function StackSection({ trackRef }: { trackRef: React.RefObject<HTMLDivElement |
     const technologies = [
         { name: 'MERN', category: 'Stack' },
         { name: 'React Native', category: 'Mobile' },
-        { name: 'Kotlin', category: 'Mobile' },
-        { name: 'Java', category: 'Language' },
         { name: 'Python', category: 'Language' },
         { name: 'C++', category: 'Language' },
         { name: 'Expo', category: 'Mobile' },
-        { name: 'Android Studio', category: 'Tool' },
         { name: 'Firebase', category: 'Cloud' },
-        { name: 'Supabase', category: 'Cloud' },
-        { name: 'Google Cloud', category: 'Cloud' },
-        { name: 'Git', category: 'Tool' },
+        { name: 'Git & GitHub', category: 'Tool' },
         // Duplicate for more scroll distance
         { name: 'TypeScript', category: 'Language' },
         { name: 'Next.js', category: 'Framework' },
-        { name: 'Tailwind CSS', category: 'Styling' },
         { name: 'Node.js', category: 'Runtime' },
-        { name: 'Express', category: 'Framework' },
-        { name: 'MongoDB', category: 'Database' },
         { name: 'Docker', category: 'Tool' },
-        { name: 'AWS', category: 'Cloud' },
-        { name: 'Figma', category: 'Design' },
-        { name: 'Redux', category: 'State' },
-        { name: 'Graphql', category: 'API' },
-        { name: 'PostgreSQL', category: 'Database' },
+        { name: 'MS SQL', category: 'API' },
     ];
 
     // Calculate scale based on distance from hovered item
@@ -288,7 +273,7 @@ function StackSection({ trackRef }: { trackRef: React.RefObject<HTMLDivElement |
             >
                 <div
                     ref={trackRef}
-                    className="flex gap-6 w-max items-center pl-32 pr-32" /* Increased padding for the blank space */
+                    className="flex gap-10 w-max items-center pl-32 pr-32" /* Increased padding for the blank space */
                 >
                     {technologies.map((tech, index) => (
                         <motion.div

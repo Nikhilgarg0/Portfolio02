@@ -37,11 +37,11 @@ export default function ProjectsSection({ projects }: { projects: Projects[] }) 
     }, { scope: containerRef, dependencies: [projects] });
 
     return (
-        <section id="projects" className="py-20 md:py-32 px-4 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
+        <section id="projects" className="py-12 md:py-16 px-4 md:px-12 max-w-[120rem] mx-auto" ref={containerRef}>
             <AnimatedElement>
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-b border-foreground/10 pb-6 md:pb-8 gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-16 border-b border-foreground/10 pb-4 md:pb-6 gap-3">
                     <div>
-                        <h2 className="font-heading text-3xl md:text-5xl font-bold mb-3 md:mb-4">Selected Works</h2>
+                        <h2 className="font-heading text-xl md:text-3xl font-bold mb-2 md:mb-3">Selected Works</h2>
                         <p className="text-foreground/60 max-w-md text-sm md:text-base">
                             A collection of experiments, applications, and technical explorations.
                         </p>
@@ -55,7 +55,7 @@ export default function ProjectsSection({ projects }: { projects: Projects[] }) 
                 </div>
             </AnimatedElement>
 
-            <div className="space-y-20 md:space-y-32">
+            <div className="space-y-12 md:space-y-20">
                 {projects.map((project, index) => (
                     <ProjectCard key={project._id} project={project} index={index} />
                 ))}
@@ -89,7 +89,7 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
             <div className="w-full lg:w-1/2">
                 <AnimatedElement>
                     <div
-                        className="bg-background/20 backdrop-blur-3xl border border-white/5 p-8 md:p-12 rounded-[32px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_40px_-6px_rgba(0,0,0,0.4)] transition-all duration-500 relative overflow-hidden"
+                        className="bg-background/20 backdrop-blur-3xl border border-white/5 p-6 md:p-8 rounded-[24px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_40px_-6px_rgba(0,0,0,0.4)] transition-all duration-500 relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[100px] rounded-full pointer-events-none" />
 
@@ -101,7 +101,7 @@ function ProjectCard({ project, index }: { project: Projects; index: number }) {
                                 </span>
                             </div>
 
-                            <h3 className="font-heading text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+                            <h3 className="font-heading text-xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                                 {p.projectName}
                             </h3>
 

@@ -64,10 +64,10 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
 
     return (
         <div className="bg-white w-full relative z-10 pb-20"> {/* White container to visualize the card shape */}
-            <section id="experience" className="py-20 md:py-32 bg-background border-t border-foreground/5 rounded-[40px] md:rounded-[60px] overflow-hidden mt-[-40px] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] relative z-20 mx-4 md:mx-6 lg:mx-10 min-h-[80vh]">
+            <section id="experience" className="py-12 md:py-16 bg-background border-t border-foreground/5 rounded-[32px] md:rounded-[48px] overflow-hidden mt-[-30px] shadow-[0_-15px_50px_rgba(0,0,0,0.15)] relative z-20 mx-4 md:mx-6 lg:mx-8 min-h-[60vh]">
                 <div className="max-w-[100rem] mx-auto px-4 md:px-12 relative" ref={containerRef}>
                     <AnimatedElement>
-                        <h2 className="font-heading text-3xl md:text-4xl font-bold mb-16 md:mb-20 text-center">Experience Journey</h2>
+                        <h2 className="font-heading text-xl md:text-2xl font-bold mb-10 md:mb-14 text-center">Experience Journey</h2>
                     </AnimatedElement>
 
                     {/* GSAP SVG Timeline */}
@@ -88,7 +88,7 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
                         />
                     </svg>
 
-                    <div className="relative z-10 space-y-16 md:space-y-32">
+                    <div className="relative z-10 space-y-10 md:space-y-20">
                         {experiences.map((exp, index) => (
                             <ExperienceItem key={exp._id} experience={exp} index={index} isFirst={index === 0} />
                         ))}
@@ -138,8 +138,8 @@ function ExperienceItem({ experience, index, isFirst }: { experience: Experience
                             {experience.startDate ? new Date(experience.startDate).getFullYear() : 'Present'}
                         </span>
 
-                        <h3 className="font-heading text-2xl font-bold mb-1">{experience.title}</h3>
-                        <p className="text-lg text-foreground/80 mb-4">{experience.organizationName}</p>
+                        <h3 className="font-heading text-lg font-bold mb-1">{experience.title}</h3>
+                        <p className="text-sm text-foreground/80 mb-3">{experience.organizationName}</p>
 
                         {experience.description && (
                             <p className="text-foreground/60 leading-relaxed text-sm">

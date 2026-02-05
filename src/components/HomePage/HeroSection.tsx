@@ -103,20 +103,20 @@ export default function HeroSection() {
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-20 md:pt-32 pb-16 md:pb-24 px-4 md:px-12 bg-background isolate">
+        <section ref={containerRef} className="relative min-h-screen w-full flex flex-col items-center justify-start overflow-hidden pt-24 md:pt-32 pb-10 md:pb-16 px-4 md:px-12 bg-background isolate">
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hero-bg-elements">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-                <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[200px] w-[200px] md:h-[310px] md:w-[310px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
+                <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[150px] w-[150px] md:h-[250px] md:w-[250px] rounded-full bg-accent/20 opacity-20 blur-[100px]" />
             </div>
 
             <div className="z-10 w-full max-w-5xl relative flex flex-col items-center">
-                <div className="flex justify-center mb-8 md:mb-12 hero-scroll-fade-wrapper relative z-0 mix-blend-difference text-white">
+                <div className="flex justify-center mb-6 md:mb-10 hero-scroll-fade-wrapper relative z-0 mix-blend-difference text-white">
                     <div className="hero-fade-in-item">
                         <AvailabilityBadge />
                     </div>
                 </div>
 
-                <div ref={textRef} className="text-center mb-6 md:mb-8 relative z-0">
+                <div ref={textRef} className="text-center mb-3 md:mb-5 relative z-0">
                     <h1 ref={nameRef} className="font-heading text-4xl md:text-7xl lg:text-8xl tracking-tight leading-[1.1] font-bold flex flex-wrap justify-center items-center gap-2 md:gap-4">
                         {/* Wrapper for Name Text Fade */}
                         <span className="hero-scroll-fade-wrapper flex flex-wrap justify-center items-center gap-2 md:gap-4 mix-blend-difference text-white">
@@ -145,11 +145,11 @@ export default function HeroSection() {
 
                 {/* Content Wrapper for Scroll Fade */}
                 <div className="hero-scroll-fade-wrapper w-full flex flex-col items-center relative z-0 mix-blend-difference">
-                    <p className="text-center text-base md:text-xl text-foreground/70 mb-12 md:mb-16 max-w-2xl mx-auto leading-relaxed px-2 hero-fade-in-item relative z-0 text-white">
+                    <p className="text-center text-sm md:text-lg text-foreground/70 mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed px-2 hero-fade-in-item relative z-0 text-white">
                         Passionate about user-centric product development, automation, and delivering reliable cloud-based solutions.
                     </p>
 
-                    <div className="mb-12 md:mb-16 bg-zinc-700/80 border border-foreground/10 rounded-[24px] p-4 md:p-8 font-mono text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-zinc-600 transition-all duration-500 hero-fade-in-item relative z-0 w-full mix-blend-normal">
+                    <div className="mb-8 md:mb-12 bg-zinc-700/80 border border-foreground/10 rounded-[20px] p-3 md:p-6 font-mono text-xs md:text-sm overflow-x-auto group hover:border-accent/30 hover:bg-zinc-600 transition-all duration-500 hero-fade-in-item relative z-0 w-full mix-blend-normal">
                         <div className="flex gap-2 mb-4">
                             <div className="w-3 h-3 rounded-full bg-red-500/60" />
                             <div className="w-3 h-3 rounded-full bg-yellow-500/60" />

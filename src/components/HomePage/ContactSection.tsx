@@ -21,12 +21,12 @@ export default function ContactSection() {
     const subjects = ['Hiring', 'Collaboration', 'Feedback', 'Other'];
 
     return (
-        <section id="contact" className="py-20 md:py-32 px-4 md:px-12 max-w-5xl mx-auto">
+        <section id="contact" className="py-12 md:py-16 px-4 md:px-12 max-w-5xl mx-auto">
             <AnimatedElement>
-                <div className="mb-12 md:mb-16">
+                <div className="mb-6 md:mb-10">
                     <span className="text-accent font-mono text-xs md:text-sm uppercase tracking-wider">Contact</span>
-                    <h2 className="font-heading text-3xl md:text-5xl font-bold mt-3 md:mt-4 mb-4 md:mb-6">Get in touch</h2>
-                    <p className="text-foreground/60 text-base md:text-lg">
+                    <h2 className="font-heading text-xl md:text-3xl font-bold mt-2 md:mt-3 mb-3 md:mb-4">Get in touch</h2>
+                    <p className="text-foreground/60 text-sm md:text-base">
                         Have a question or want to work together? Send me a message.
                     </p>
                 </div>
@@ -50,7 +50,7 @@ export default function ContactSection() {
                         </button>
                     </motion.div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 bg-background/20 backdrop-blur-2xl border border-white/5 rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 bg-background/20 backdrop-blur-2xl border border-white/5 rounded-[24px] p-5 md:p-6 shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 relative z-10">
